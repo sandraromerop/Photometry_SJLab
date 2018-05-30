@@ -35,8 +35,12 @@ for i=1:nbofgroups
     else
         GP = rmfield(GP,thisgroup);
     end
-    
+    if ~isempty( GP.(thisgroup).types)
+    else
+        GP = rmfield(GP,thisgroup);
+    end
 end
+
 nbofgroups = length(GP);
 labelx='Time (sec)';   
 xTime=[Analysis.Properties.PlotEdges(1) Analysis.Properties.PlotEdges(2)];
@@ -50,14 +54,17 @@ NidaqRange=Analysis.Properties.NidaqRange;
 %% Table Parameters
 TableTitles={'Trial Type','Cue Max DF/F(%)','Cue AVG DF/F(%)','SEM','Outcome Max DF/F(%)','Outcome AVG DF/F(%)','SEM','nb of trials','ignored trials'};
 
-
+TableData = [];k=1;
 for i= (trialTypes)
+    
     % -------------------------------
     trialTypeNb = i;
     [thisFilter] = getFilter(Analysis,trialTypeNb);
     time                = Analysis.AllData.Photo_470.Time(1,:);    
-    cueTimes            = Analysis.AllData.CueTime(thisFilter,:);cueTimes = cueTimes(1,:)+Analysis.Properties.CueTimeReset;
-    outcomeTimes        = Analysis.AllData.OutcomeTime(thisFilter,:);outcomeTimes = outcomeTimes(1,:)+Analysis.Properties.CueTimeReset;
+    cueTimes            = Analysis.AllData.CueTime(thisFilter,:);
+    cueTimes = cueTimes(1,:)+Analysis.Properties.CueTimeReset;
+    outcomeTimes        = Analysis.AllData.OutcomeTime(thisFilter,:);
+    outcomeTimes = outcomeTimes(1,:)+Analysis.Properties.CueTimeReset;
     DFF                 = Analysis.AllData.(thisChStruct).DFF(thisFilter,:);
     cueDFF              = Analysis.AllData.(thisChStruct).Cue(thisFilter);
     outcomeDFF          = Analysis.AllData.(thisChStruct).Outcome(thisFilter);
@@ -66,15 +73,16 @@ for i= (trialTypes)
     ignoredTrials       = Analysis.AllData.nTrials-nTrials;    
     avgDFF              = nanmean(DFF,1);
     
-    TableData{i,1}	=   Analysis.Properties.TrialNames{1,i};
-    TableData{i,2}	=   max(avgDFF(time >cueTimes(1) & time(1,:)<cueTimes(2))); % cueMax
-    TableData{i,3}	=   nanmean(cueDFF,2); % cueAVG
-    TableData{i,4}	=   nanstd(cueDFF,0,2)/sqrt(nTrials); %cueSEM
-    TableData{i,5}	=   max(avgDFF(time >outcomeTimes(1) & time <outcomeTimes(2))); % outcomeMax
-    TableData{i,6} =    nanmean(outcomeDFF,2); % outcomeAVG
-    TableData{i,7} =    nanstd(outcomeDFF,0,2)/sqrt( nTrials); %outcomeSEM
-    TableData{i,8} =    nTrials;
-    TableData{i,9} =    ignoredTrials;
+    TableData{k,1}	=   Analysis.Properties.TrialNames{1,i};
+    TableData{k,2}	=   max(avgDFF(time >cueTimes(1) & time(1,:)<cueTimes(2))); % cueMax
+    TableData{k,3}	=   nanmean(cueDFF,2); % cueAVG
+    TableData{k,4}	=   nanstd(cueDFF,0,2)/sqrt(nTrials); %cueSEM
+    TableData{k,5}	=   max(avgDFF(time >outcomeTimes(1) & time <outcomeTimes(2))); % outcomeMax
+    TableData{k,6}  =   nanmean(outcomeDFF,2); % outcomeAVG
+    TableData{k,7}  =   nanstd(outcomeDFF,0,2)/sqrt( nTrials); %outcomeSEM
+    TableData{k,8}  =   nTrials;
+    TableData{k,9}  =   ignoredTrials;
+    k=k+1;
 end
 
 %% Figure
@@ -107,14 +115,13 @@ xlabel('Trial Nb');
 ylabel('Normalized Fluo');
 
 %% Group plot
-for i=1:nbofgroups
-	thisgroup=sprintf('thisgroup_%.0d',i);
+namesF = fieldnames(GP);
+for i=1:length(namesF)
+	thisgroup=namesF{i};
 % Population of the plots
     k=1;
     for j=GP.(thisgroup).types
         trialTypeNb = j;[thisFilter] = getFilter(Analysis,trialTypeNb);
-        
-        thistype=sprintf('type_%.0d',j);
         subplot(3,4,i); hold on;
         lickBin=Analysis.AllData.Licks.Bin{thisFilter};
         hs=shadedErrorBar(lickBin,[ 0 mean(Analysis.AllData.Licks.Rate(thisFilter,:))],...

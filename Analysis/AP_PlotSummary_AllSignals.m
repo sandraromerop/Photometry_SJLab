@@ -1,4 +1,4 @@
-function AP_PlotSummary_AllSignals(Analysis,DefaultParam,idTrials)
+function AP_PlotSummary_AllSignals(Analysis,DefaultParam )
 
 figure('units','normalized','position',[.1 .1 .7 .7])
 pearsonR_velocity=[];
@@ -13,7 +13,11 @@ for i=1:nbOfTrialTypes
      [thisFilter] = getFilter(Analysis,i);   
      idFilt = [idFilt  thisFilter];
 end
-idDisc = find(all(idFilt==0,1)); trialTypes = idTrials;trialTypes(idDisc)=[];trialTypes(trialTypes>nbOfTrialTypes)=[];
+idTrials = 1:nbOfTrialTypes;
+idDisc = find(all(idFilt==0,1));  
+trialTypes = idTrials;
+trialTypes(idDisc)=[];
+trialTypes(trialTypes>nbOfTrialTypes)=[];
 matIP =reshape( 1:(5*length(trialTypes)),length(trialTypes),5)';
 if size(matIP,1)==1
     matIP=matIP(:);
@@ -49,15 +53,15 @@ for tT = trialTypes
     xlabel('Time (sec)')
     ax=gca;ax.XLim = [-5 5 ];
     box off  
-     if tT==1 && tT>5
-        title([ { strrep(DefaultParam.FileList(1:end-4),'_',' '); Analysis.Filters.Names{tT}}]);       
-    elseif tT>5
-        title(Analysis.Filters.Names{tT});
-    elseif tT==1 && tT<=5
-        title([ {strrep(DefaultParam.FileList(1:end-4),'_',' ');   Analysis.Properties.TrialNames{tT}  }]);       
-    else
-        title(Analysis.Properties.TrialNames{tT});
-    end   
+   %  if tT==1 && tT>5
+   %     title([ { strrep(DefaultParam.FileList(1:end-4),'_',' '); Analysis.Filters.Names{tT}}]);       
+%     elseif tT>5
+%         title(Analysis.Filters.Names{tT});
+%     elseif tT==1 && tT<=5
+         title([ {strrep(DefaultParam.FileList(1:end-4),'_',' ');   Analysis.Properties.TrialNames{tT}  }]);       
+%     else
+%         title(Analysis.Properties.TrialNames{tT});
+%     end   
     
     subplot(5,length(trialTypes),matIP(2,ip))
     shadedErrorBar(Analysis.AllData.Licks.Bin{1}(2:end) ,nanmean(tempLick,1),...
@@ -74,7 +78,7 @@ for tT = trialTypes
     subplot(5,length(trialTypes),matIP(3,ip))
     
     imagesc(tempPhoto_470);colorbar
-    imagesc(Analysis.AllData.Photo_470.Time(1,:),trialsNb,tempPhoto_470,[p10(1) p90(1)]);hold on
+    imagesc(Analysis.AllData.Photo_470.Time(1,:),trialsNb,tempPhoto_470,[p10(1) p90(1)+.1]);hold on
     pos=get(gca,'pos');
     c=colorbar('location','eastoutside','position',[pos(1)+pos(3).*.9   pos(2) 0.005 pos(4)]);
     c.Label.String ='DF/F0';
@@ -84,7 +88,7 @@ for tT = trialTypes
     end
     
     subplot(5,length(trialTypes),matIP(4,ip))
-    imagesc(Analysis.AllData.Photo_470.Time(1,1:end-1),trialsNb,abs(tempWheel),[p10(2) p90(2)]);hold on
+    imagesc(Analysis.AllData.Photo_470.Time(1,1:end-1),trialsNb,abs(tempWheel),[p10(2) p90(2)+.1]);hold on
     pos=get(gca,'pos');
     c=colorbar('location','eastoutside','position',[pos(1)+pos(3).*.9   pos(2) 0.005 pos(4)]);    c.Label.String ='Velocity cm/s';
     plot([0 0],[0 max(trialsNb)],'-r');
