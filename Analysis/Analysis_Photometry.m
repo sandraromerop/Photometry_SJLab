@@ -66,6 +66,7 @@ if Analysis.Properties.PlotSummary1==1
 end
 Analysis.Properties.WheelThreshold=DefaultParam.WheelThreshold;
 %% Filters and Extra Plots
+try
 if Analysis.Properties.Photometry==1
 switch Analysis.Properties.Behavior
     case 'CuedReward'
@@ -78,7 +79,7 @@ AP_AuditoryTuning_FiltersAndPlot(Analysis);
 Analysis=AP_OddBall_FiltersAndPlot(Analysis);
 end
 end
-
+catch
 %% Save Analysis
 if DefaultParam.Save
     Analysis.Properties.Files=DefaultParam.FileToOpen;

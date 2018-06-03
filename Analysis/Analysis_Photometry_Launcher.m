@@ -7,13 +7,13 @@ DefaultParam.Load=0;
 % Figures
 DefaultParam.PlotSummary1=1;
 DefaultParam.PlotSummary2=1;
-DefaultParam.PlotFiltersSingle=1; %AP_Filter_GroupToPlot #1 Output
+DefaultParam.PlotFiltersSingle=0; %AP_Filter_GroupToPlot #1 Output
 DefaultParam.PlotFiltersSummary=1;
 DefaultParam.PlotFiltersBehavior=0; %AP_Filter_GroupToPlot #2 Ouput -- not really working properly
 DefaultParam.Illustrator=0;
 DefaultParam.Transparency=1;
 % Axis
-DefaultParam.PlotYNidaq=[-2 2];
+DefaultParam.PlotYNidaq=[-5 25];
 DefaultParam.PlotX=[-4 4];
 % States
 DefaultParam.CueTimeReset=[0 1];
@@ -48,10 +48,10 @@ DefaultParam.NidaqDuration=15;
 %[DefaultParam.FileList,DefaultParam.PathName]=uigetfile('*.mat','Select the BPod file(s)','MultiSelect', 'on');
 close all
 
-generalDir = 'G:\';
-subjects = {'mar021' };
+generalDir = 'C:\Users\SJLab\Desktop\Bpod_Sandra_room\Data\';
+subjects = {'mar025' };
 sessions = [2];
-dates = {'May25_2018'};
+dates = {'May31_2018'};
 protocol = 'CuedReward';
 
 % not: 1 6 7 10 13  17 18
