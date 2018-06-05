@@ -75,7 +75,7 @@ for tT = trialTypes
     if optoStimOffset-optoStimOnset>1e-6
         plot([optoStimOnset optoStimOffset],[maxY*.9 maxY*.9],'Color',[1. 0.3333   0],'LineWidth',2,'LineStyle','-');
     end
-    ax=gca;ax.YLim = [0 maxY+1];ax.XLim = [0 5];
+    ax=gca;ax.YLim = [0 maxY+1];ax.XLim = [-5 5];
 
     subplot(5,length(trialTypes),matIP(3,ip))
     imagesc(timeD,trialsNb,tempPhoto_470,[p10(1) p90(1)+.1]);hold on
