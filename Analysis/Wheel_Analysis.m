@@ -2,15 +2,11 @@
 
 % rough script for wheel analysis to IMPROVE
 
-idTrials =6;
+
 thrAccRest = 0.25;% prctile(tempAcc(:),90);%0.005;
 thrAccLoco = 0.0001;% prctile(tempAcc(:),90);%0.005;
-thrVelocLoco = 0.25;%prctile(tempVeloc(:),95);
-thrVelocRest = 0.25;
-timeD = Analysis.AllData.Photo_470.Time(1,1:end);
-timeV = linspace(timeD(1),timeD(end),length(timeD)-1);
-timeA = linspace(timeV(1),timeV(end),length(timeV)-1);
-
+thrVelocLoco = 0.2;%prctile(tempVeloc(:),95);
+thrVelocRest = 0.2;
 segmCorr = ceil(0.75/(timeV(2)- timeV(1)));
 tempPhoto_470 = Analysis.AllData.Photo_470.DFF(:,1:end);
 tempVeloc =abs(diff( Analysis.AllData.Wheel.Distance,[],2));
@@ -20,7 +16,10 @@ trialsNb =1:Analysis.AllData.nTrials;
 tempVeloc = cat(1,tempVeloc,nan.*ones(1,size(tempVeloc,2)));
 tempPhoto_470 = cat(1,tempPhoto_470,nan.*ones(1,size(tempPhoto_470,2)));
 tempLick = cat(1,tempLick,nan.*ones(1,size(tempLick,2)));
-for tT =[1  ]%:length(idTrials)
+timeV = linspace(timeD(1),timeD(end),length(timeD)-1)
+
+timeA = linspace(timeV(1),timeV(end),length(timeV)-1);
+for tT =[1 3 4  ]%:length(idTrials)
 tType = idTrials(tT);
 idType = find(Analysis.Filters.Logicals(:,tType)==1);  
 idKeep=[];
@@ -34,21 +33,21 @@ for tt= 1:length(idType)-1
     meanV=[];
     figure
     subplot(2,1,1)
-    plot(timeV, temp );hold on
+     plot(timeV, temp );hold on
     ipt = findchangepts(temp,'MaxNumChanges',4,'Statistic','linear') ;ipt2=[];
     if ~isempty(ipt)
-        for ii=1:length(ipt)
-            line([timeV(ipt(ii)) timeV(ipt(ii))],[0 temp(ipt(ii))],'Color','red')
-            if sum(diff(temp(ipt(ii)-1:ipt(ii)+1)))>=0
-                [minV idMin]=min(temp( max(1, ipt(ii)-ceil(.5/(timeV(2)- timeV(1)))):ipt(ii) ))
-                ipt2(ii) = max(1,ipt(ii)-ceil(.5/(timeV(2)- timeV(1)))+idMin-1);
-            else
-                [minV idMin]=min(temp(ipt(ii):  min(ipt(ii)+ceil(.5/(timeV(2)- timeV(1))),length(temp) ) ))
-                ipt2(ii) =min( ipt(ii)+idMin-1,length(temp));
-            end
-
-            line([timeV(ipt2(ii)) timeV(ipt2(ii))],[0 temp(ipt2(ii))],'Color','blue')
+    for ii=1:length(ipt)
+        line([timeV(ipt(ii)) timeV(ipt(ii))],[0 temp(ipt(ii))],'Color','red')
+        if sum(diff(temp(ipt(ii)-1:ipt(ii)+1)))>=0
+            [minV idMin]=min(temp( max(1, ipt(ii)-ceil(.5/(timeV(2)- timeV(1)))):ipt(ii) ))
+            ipt2(ii) = max(1,ipt(ii)-ceil(.5/(timeV(2)- timeV(1)))+idMin-1);
+        else
+            [minV idMin]=min(temp(ipt(ii):  min(ipt(ii)+ceil(.5/(timeV(2)- timeV(1))),length(temp) ) ))
+            ipt2(ii) =min( ipt(ii)+idMin-1,length(temp));
         end
+        
+        line([timeV(ipt2(ii)) timeV(ipt2(ii))],[0 temp(ipt2(ii))],'Color','blue')
+    end
     subplot(2,1,2)
      plot(timeA, tempA );hold on
      for ii=1:length(ipt)
@@ -215,7 +214,7 @@ subplot(3,3,1)
 plot(timeCent,tempPhotoCent');xlabel('Time');ylabel('DF/F0')
 tit = strrep(DefaultParam.FileList(1:end-4),'_',' ');
 tit  = strrep(tit,'CuedReward',' ');
-% title({[tit];eval(['Analysis.type_' num2str(tType) '.Name'])})
+title({[tit];eval(['Analysis.type_' num2str(tType) '.Name'])})
 subplot(3,3,2)
 imagesc(timeCent,trialsNb,tempPhotoCent);hold on;xlabel('Time');ylabel('Trial Nb')
 c=colorbar('location','eastoutside');    c.Label.String ='DF/F0';
@@ -286,8 +285,8 @@ for tt=1:length(idType)-1
     subplot(2,1,1)
      plot(timeV, temp );hold on
     ipt = findchangepts(temp,'MaxNumChanges',4,'Statistic','linear') ;ipt2=[];
-    id1=find(Analysis.Filters.Logicals(ti,:)==1);
-    id2=find(Analysis.Filters.Logicals(ti,:)==1);
+    id1=find(Analysis.Filters.Logicals(ti,1:5)==1);
+    id2=find(Analysis.Filters.Logicals(ti,1:5)==1);
     if id1(1)==1 || id2(1)==4
         idZero = find(timeV>=0);idZero=idZero(1);idNan=idZero-ceil(.5/(timeV(2)- timeV(1))):idZero+ceil(1.5/(timeV(2)- timeV(1)));
         [a idDisc ]=intersect(ipt,idNan);
@@ -509,5 +508,3 @@ shadedErrorBar(timeCent(1:end),nanmean(tempPhotoCentA,1),...
     nanstd(tempPhotoCentA,[],1)./(sqrt(length(idKT))),'-b',1);hold on
 ylabel('DF/F0')
 saveas(gcf,[Analysis.Properties.DirFig  '\AllignedWheel\'  Analysis.Properties.Name 'allignedToWheel_allTrials' '.png']);
-
-%% Alligned to optogenetics
