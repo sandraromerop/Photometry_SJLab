@@ -1,7 +1,6 @@
 function AP_PlotSummary_AllSignals(Analysis,DefaultParam )
 
 figure('units','normalized','position',[.1 .1 .7 .7])
-pearsonR_velocity=[];
 p90(1) = prctile(Analysis.AllData.Photo_470.DFF(:),90);p10(1) = prctile(Analysis.AllData.Photo_470.DFF(:),10);
 velocity = abs(diff( Analysis.AllData.Wheel.Distance,[],2));
 p90(2) = prctile(velocity(:),90);p10(2) = prctile(velocity(:),10);
@@ -61,6 +60,7 @@ for tT = trialTypes
     xlabel('Time (sec)')
     box off  
     title([ {strrep(DefaultParam.FileList(1:end-4),'_',' ');   Analysis.Properties.TrialNames{tT}  }]);          
+    ax=gca;ax.XLim=[-5 5];
     
     subplot(5,length(trialTypes),matIP(2,ip))
     shadedErrorBar(Analysis.AllData.Licks.Bin{1}(2:end) ,nanmean(tempLick,1),...
@@ -75,7 +75,7 @@ for tT = trialTypes
     if optoStimOffset-optoStimOnset>1e-6
         plot([optoStimOnset optoStimOffset],[maxY*.9 maxY*.9],'Color',[1. 0.3333   0],'LineWidth',2,'LineStyle','-');
     end
-    ax=gca;ax.YLim = [0 maxY+1];ax.XLim = [0 5];
+    ax=gca;ax.XLim=[-5 5];
 
     subplot(5,length(trialTypes),matIP(3,ip))
     imagesc(timeD,trialsNb,tempPhoto_470,[p10(1) p90(1)+.1]);hold on

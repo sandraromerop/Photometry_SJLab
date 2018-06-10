@@ -13,7 +13,7 @@ DefaultParam.PlotFiltersBehavior=0; %AP_Filter_GroupToPlot #2 Ouput -- not reall
 DefaultParam.Illustrator=0;
 DefaultParam.Transparency=1;
 % Axis
-DefaultParam.PlotYNidaq=[-5 25];
+DefaultParam.PlotYNidaq=[-1 5];
 DefaultParam.PlotX=[-4 4];
 % States
 DefaultParam.CueTimeReset=[0 1];
@@ -49,9 +49,9 @@ DefaultParam.NidaqDuration=15;
 close all
 
 generalDir = 'C:\Users\SJLab\Desktop\Bpod_Sandra_room\Data\';
-subjects = {'mar025' };
+subjects = {'mar021' };
 sessions = [2];
-dates = {'May31_2018'};
+dates = {'May25_2018'};
 protocol = 'CuedReward';
 
 % not: 1 6 7 10 13  17 18
