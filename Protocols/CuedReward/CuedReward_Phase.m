@@ -95,9 +95,9 @@ switch PhaseName
             3,   S.GUI.ProbCueBOmission,        2,    S.GUI.Delay,  S.GUI.OmissionValve,	S.InterRew,    double('s')     0                   S.GUI.OptoStimCueDelay                    0;...   % CueB: omission
             4,   S.GUI.ProbUncuedRwd,           3,    S.GUI.Delay,  S.GUI.RewardValve,      S.InterRew,    double('o')     0                   S.GUI.OptoStimCueDelay                    0;...   % Uncued reward
             5,   S.GUI.ProbUncuedOmission  ,    3,    S.GUI.Delay,  S.GUI.OmissionValve,	S.InterRew,    double('s')     0                   S.GUI.OptoStimCueDelay                    0;...   % No Cue + no reward
-            6,   S.GUI.ProbCueAOpto,            1,    S.GUI.Delay,  S.GUI.OmissionValve,	S.InterRew,    double('s')     2                   S.GUI.OptoStimCueDelay                       0;...   % (CueA+ Stim) + reward 
+            6,   S.GUI.ProbCueAOpto,            1,    S.GUI.Delay,  S.GUI.RewardValve,	S.InterRew,    double('s')     2                   S.GUI.OptoStimCueDelay                       0;...   % (CueA+ Stim) + reward 
             7,   S.GUI.ProbCueBOpto,            2,    S.GUI.Delay,  S.GUI.OmissionValve,	S.InterRew,    double('s')     2                   S.GUI.OptoStimCueDelay                       0;...   % (CueB+ Stim) + omission 
-            8,   S.GUI.ProbCueARwdOpto,         1,    S.GUI.Delay,  S.GUI.OmissionValve,	S.InterRew,    double('s')     0                   S.GUI.OptoStimCueDelay                    2;...   %  CueA  + (reward + stim)
+            8,   S.GUI.ProbCueARwdOpto,         1,    S.GUI.Delay,  S.GUI.RewardValve,	S.InterRew,    double('s')     0                   S.GUI.OptoStimCueDelay                    2;...   %  CueA  + (reward + stim)
             9,   S.GUI.ProbCueBOmissionOpto,    2,    S.GUI.Delay,  S.GUI.OmissionValve,	S.InterRew,    double('s')     0                   S.GUI.OptoStimCueDelay                    2 ];    %  CueB  + (omission + stim)
 
         easyTrials=[1 1 1 1 3 3 4 4];
