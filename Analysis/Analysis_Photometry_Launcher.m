@@ -13,7 +13,7 @@ DefaultParam.PlotFiltersBehavior=0; %AP_Filter_GroupToPlot #2 Ouput -- not reall
 DefaultParam.Illustrator=0;
 DefaultParam.Transparency=1;
 % Axis
-DefaultParam.PlotYNidaq=[-15 50];
+DefaultParam.PlotYNidaq=[-1 5];
 DefaultParam.PlotX=[-4 4];
 % States
 DefaultParam.CueTimeReset=[0 1];
@@ -48,15 +48,15 @@ DefaultParam.NidaqDuration=15;
 %[DefaultParam.FileList,DefaultParam.PathName]=uigetfile('*.mat','Select the BPod file(s)','MultiSelect', 'on');
 close all
 
-generalDir = 'C:\Users\Lars\Documents\Data\Photometry\';
-subjects = {'mar027' };
-sessions = [1];
-dates = {'Jun05_2018'};
+generalDir = 'C:\Users\SJLab\Desktop\Bpod_Sandra_room\Data\';
+subjects = {'mar021' };
+sessions = [2];
+dates = {'May25_2018'};
 protocol = 'CuedReward';
 
 % not: 1 6 7 10 13  17 18
-for ss =  1:length(sessions) 
-    dir = [generalDir subjects{ss} '\'];
+for ss =  1:length(sessions);
+    dir = [generalDir subjects{ss} '\' protocol '\Session Data\'];
     DefaultParam.PathName = dir;
     DefaultParam.FileList = [subjects{ss} '_' protocol '_' dates{ss} '_Session' num2str(sessions(ss)) '.mat'];
     if iscell(DefaultParam.FileList)==0
