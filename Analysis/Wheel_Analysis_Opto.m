@@ -3,7 +3,7 @@
 
 %% Set
 idTrials =7;
-excitation = 0;
+excitation =1;
 %%
 if excitation==1
     factorStim=1;
@@ -54,22 +54,24 @@ idKeep=[];
 end
 
 % ------------------------------------------------------------
-figure('units','normalized','position',[.1 .1 .5 .25])
+figure('units','normalized','position',[.1 .1 .5 .3])
 subplot(1,2,1)
 plot(maxDF,maxV,'+');hold on
 xlabel('DF/F0'); ylabel('Velocity cm/s')
 [ r p]= corr(maxDF(:), maxV(:));
-text(min(maxDF), max(maxV)/2,['R2= ' num2str(r)])
+text(min(maxDF), max(maxV)/2,['R2= ' num2str(r) ',p = ' num2str(p) ])
 mdl=fitlm(maxDF, maxV);
 yy = predict(mdl,maxDF(:)); plot(maxDF,yy,'Color',[.7 .7 .7])
 legend('Data','Linear Fit')
-
+title([ {strrep(DefaultParam.FileList(1:end-4),'_',' ') }]);     
 subplot(1,2,2)
 plot(maxDF,maxA,'+');hold on
 xlabel('DF/F0'); ylabel('Acceleration cm/s2')
 [ r p]= corr(maxDF(:), maxA(:));
-text(min(maxDF), max(maxA)/2,['R2= ' num2str(r)])
+text(min(maxDF), max(maxA)/2,['R2= ' num2str(r) ',p = ' num2str(p) ])
 mdl=fitlm(maxDF, maxA);
 yy = predict(mdl,maxDF(:)); plot(maxDF,yy,'Color',[.7 .7 .7])
 legend('Data','Linear Fit')
+title(['Max values during optogenetic stimulation']);     
+
 % ------------------------------------------------------------
