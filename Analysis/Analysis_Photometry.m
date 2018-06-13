@@ -24,7 +24,7 @@ else
     Pupillometry=[];
 end
 try
-    Analysis.Properties=AP_Parameters(SessionData,Pupillometry,DefaultParam,FileNameNoExt);
+    Analysis.Properties = AP_Parameters(SessionData,Pupillometry,DefaultParam,FileNameNoExt);
     Analysis=A_FilterIgnoredTrials(Analysis,DefaultParam.TrialToFilterOut,DefaultParam.LoadIgnoredTrials);
     tic
     Analysis=AP_DataOrganize(Analysis,SessionData,Pupillometry);

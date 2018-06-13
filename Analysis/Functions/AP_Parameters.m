@@ -177,10 +177,10 @@ end
 % 405    
     if isfield(SessionData.TrialSettings(1).GUI,'LED2_Amp') % can be absent in some early version of Bpod parameters
         if SessionData.TrialSettings(1).GUI.LED2_Amp~=0
-            handles.PhotoCh{length(handles.PhotoCh)+1}={'405'};
-            handles.PhotoField{length(handles.PhotoField)+1}={handles.PhotometryField};
-            handles.PhotoAmpField{length(handles.PhotoAmpField)+1}={'LED2_Amp'};
-            handles.PhotoFreqField{length(handles.PhotoFreqField)+1}={'LED2_Freq'};
+            handles.PhotoCh{length(handles.PhotoCh)+1}='405';
+            handles.PhotoField{length(handles.PhotoField)+1}=handles.PhotometryField;
+            handles.PhotoAmpField{length(handles.PhotoAmpField)+1}='LED2_Amp';
+            handles.PhotoFreqField{length(handles.PhotoFreqField)+1}='LED2_Freq';
             handles.PhotoModulData=[handles.PhotoModulData 3];
             handles.Modulation=1;
             handles.recordedMod=1;
@@ -188,10 +188,10 @@ end
     end
 % Dual Fibers / PhotoDetet
     if isfield(SessionData,handles.Photometry2Field)
-        handles.PhotoCh{length(handles.PhotoCh)+1}={'470b'};
-        handles.PhotoField{length(handles.PhotoField)+1}={handles.Photometry2Field};
-        handles.PhotoAmpField{length(handles.PhotoAmpField)+1}={'LED1b_Amp'};
-        handles.PhotoFreqField{length(handles.PhotoFreqField)+1}={'LED1b_Freq'};
+        handles.PhotoCh{length(handles.PhotoCh)+1}='470b';
+        handles.PhotoField{length(handles.PhotoField)+1}=handles.Photometry2Field;
+        handles.PhotoAmpField{length(handles.PhotoAmpField)+1}='LED1b_Amp';
+        handles.PhotoFreqField{length(handles.PhotoFreqField)+1}='LED1b_Freq';
         handles.PhotoModulData=[handles.PhotoModulData 2];
         handles.Modulation=1;
         handles.recordedMod=1;
