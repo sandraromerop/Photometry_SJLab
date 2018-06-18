@@ -86,10 +86,10 @@ if length(x) ~= length(errBar)
 end
 
 %Set default options
-defaultProps={'-k'};
+defaultProps='-k';
 if nargin<4, lineProps=defaultProps; end
 if isempty(lineProps), lineProps=defaultProps; end
-if ~iscell(lineProps), lineProps={lineProps}; end
+if ischar(lineProps), lineProps={lineProps}; end
 
 if nargin<5, transparent=0; end
 
@@ -99,8 +99,11 @@ if nargin<5, transparent=0; end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 % Plot to get the parameters of the line 
-H.mainLine=plot(x,y,lineProps{:});
-
+if iscell(lineProps)
+    H.mainLine=plot(x,y,lineProps{:});
+else
+H.mainLine=plot(x,y,'Color',lineProps);
+end
 
 % Work out the color of the shaded region and associated lines
 % Using alpha requires the render to be openGL and so you can't
@@ -152,8 +155,11 @@ H.edge(2)=plot(x,uE,'-','color',edgeColor);
 
 %Now replace the line (this avoids having to bugger about with z coordinates)
 delete(H.mainLine)
-H.mainLine=plot(x,y,lineProps{:});
-
+if iscell(lineProps)
+    H.mainLine=plot(x,y,lineProps{:});
+else
+H.mainLine=plot(x,y,'Color',lineProps);
+end
 
 if ~holdStatus, hold off, end
 

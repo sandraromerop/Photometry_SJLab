@@ -25,7 +25,7 @@ processedData_90    = rawData .* refData90;
     pad = 1;
     if pad
         paddedData_0        = processedData_0(1:sampleRate, 1);
-        paddedData_90       = processedData_0(1:sampleRate, 1);
+        paddedData_90       = processedData_90(1:sampleRate, 1);
         demodDataFilt_0     = filtfilt(b,a,[paddedData_0; processedData_0]);
         demodDataFilt_90    = filtfilt(b,a,[paddedData_90; processedData_90]);        
         processedData_0     = demodDataFilt_0(sampleRate + 1: end, 1);
