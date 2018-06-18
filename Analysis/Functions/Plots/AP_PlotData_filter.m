@@ -38,7 +38,7 @@ end
 if Analysis.Properties.Photometry==1
 %Nidaq y axes
 if isempty(Analysis.Properties.NidaqRange)
-    NidaqRange=[0-6*Analysis.Properties.NidaqSTD 6*Analysis.Properties.NidaqSTD];
+    NidaqRange=[0-6*Analysis.Properties.NidaqSTD 12*Analysis.Properties.NidaqSTD];
     Analysis.Properties.NidaqRange=NidaqRange;
 else
     NidaqRange=Analysis.Properties.NidaqRange;
