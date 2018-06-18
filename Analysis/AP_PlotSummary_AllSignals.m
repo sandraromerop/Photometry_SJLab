@@ -1,16 +1,25 @@
 function AP_PlotSummary_AllSignals(Analysis,DefaultParam )
+velocity = abs(diff( Analysis.AllData.Wheel.Distance,[],2));
 
 figure('units','normalized','position',[.1 .1 .7 .7])
-p90(1) = prctile(Analysis.AllData.Photo_470.DFF(:),90);p10(1) = prctile(Analysis.AllData.Photo_470.DFF(:),10);
-velocity = abs(diff( Analysis.AllData.Wheel.Distance,[],2));
-p90(2) = prctile(velocity(:),90);p10(2) = prctile(velocity(:),10);
-p90(3) = max(Analysis.AllData.Licks.Rate(:));p10(3) = prctile(Analysis.AllData.Licks.Rate(:),10);
+p90(1) = prctile(Analysis.AllData.Photo_470.DFF(:),90);
+p10(1) = prctile(Analysis.AllData.Photo_470.DFF(:),10);
+maxYY(1) = max(Analysis.AllData.Photo_470.DFF(:));
+maxYY(2) = max(velocity(:));
+maxYY(3) = max(Analysis.AllData.Licks.Rate(:));
+minY(1) = min(Analysis.AllData.Photo_470.DFF(:));
+minY(2) = min(velocity(:));
+minY(3) = min(Analysis.AllData.Licks.Rate(:));
+
+
+p90(2) = prctile(velocity(:),90);
+p10(2) = prctile(velocity(:),10);
+p90(3) = max(Analysis.AllData.Licks.Rate(:));
+p10(3) = prctile(Analysis.AllData.Licks.Rate(:),10);
 timeD = Analysis.AllData.Photo_470.Time(1,1:end);
 timeV = linspace(timeD(1),timeD(end),length(timeD)-1);
-optoStimOnset =-[ Analysis.AllData.States{1}.Outcome(1)-...
-    Analysis.AllData.States{1}.PhotoStim(1)];
-optoStimOffset =-[ Analysis.AllData.States{1}.Outcome(1)-...
-    Analysis.AllData.States{1}.PhotoStim(2)];
+
+
 
 
 idFilt=[];nbOfTrialTypes= Analysis.Properties.nbOfTrialTypes;
@@ -23,12 +32,30 @@ idDisc = find(all(idFilt==0,1));
 trialTypes = idTrials;
 trialTypes(idDisc)=[];
 trialTypes(trialTypes>nbOfTrialTypes)=[];
-matIP =reshape( 1:(5*length(trialTypes)),length(trialTypes),5)';
+
+
+
+matIP =reshape( 1:(6*length(trialTypes)),length(trialTypes),6)';
 if size(matIP,1)==1
     matIP=matIP(:);
 end
 ip=1;
 for tT = trialTypes
+    
+    if ~isempty(strfind( Analysis.Properties.TrialNames{tT},'Opto'))
+        if ~isempty(strfind( Analysis.Properties.TrialNames{tT},'OptoStim at Cue'))
+            optoStimOnset =-[ Analysis.AllData.States{1}.Outcome(1)-...
+                            Analysis.AllData.States{1}.PhotoStim(1)];
+            optoStimOffset =-[ Analysis.AllData.States{1}.Outcome(1)-...
+                            Analysis.AllData.States{1}.PhotoStim(1)- ...
+                            nanmean([Analysis.Properties.GUISettings.PulseTrainDuration])];
+        else
+            optoStimOnset = 0 ;
+            optoStimOffset =[nanmean([Analysis.Properties.GUISettings.PulseTrainDuration])];
+           
+            
+        end
+    end
     %try 
     [thisFilter] = getFilter(Analysis,tT);    
     tempPhoto_470 = Analysis.AllData.Photo_470.DFF(thisFilter,1:end);
@@ -39,30 +66,51 @@ for tT = trialTypes
     tempPhoto_470 = cat(1,tempPhoto_470,nan.*ones(1,size(tempPhoto_470,2)));
     tempLick = cat(1,tempLick,nan.*ones(1,size(tempLick,2)));
     
-    subplot(5,length(trialTypes),matIP(1,ip));%ip=ip+1;
-    yyaxis right
-    shadedErrorBar(timeV,nanmean(abs(tempWheel(:,1:end)),1),...
-        nanstd(abs(tempWheel(:,1:end)),[],1)./(sqrt(size(tempWheel,1))),'-r',1)
-    maxY = max(nanmean( (tempPhoto_470(:,1:end))))+ max(0.5*nanstd( (tempPhoto_470(:,1:end)))./(sqrt(size(tempPhoto_470,1))))+1;
-    ylabel('Velocity (cm/s)')
-    yyaxis left
+    subplot(6,length(trialTypes),matIP(1,ip));%ip=ip+1;
+  %  yyaxis right
     shadedErrorBar(timeD,nanmean(tempPhoto_470(:,1:end),1),...
         nanstd((tempPhoto_470(:,1:end)),[],1)./(sqrt(size(tempPhoto_470,1))),'-b',1)
-    ylabel('DF/F0')
     maxY = max(nanmean( (tempPhoto_470(:,1:end))))+max(0.5*nanstd( (tempPhoto_470(:,1:end)))./(sqrt(size(tempPhoto_470,1))))+1;
     maxY(isnan(maxY))=0;
     hold on
     plot([0 0],[0 maxY],'Color',[.5 .5 .5]);
     plot(Analysis.AllData.CueTime(1,:),[maxY maxY],'Color',[.7 .7 .7],'LineWidth',2,'LineStyle','-');
-    if optoStimOffset-optoStimOnset>1e-6
-        plot([optoStimOnset optoStimOffset],[maxY*.9 maxY*.9],'Color',[1. 0.3333   0],'LineWidth',2,'LineStyle','-');
-    end
-    xlabel('Time (sec)')
-    box off  
-    title([ {strrep(DefaultParam.FileList(1:end-4),'_',' ');   Analysis.Properties.TrialNames{tT}  }]);          
-    ax=gca;ax.XLim=[-5 5];
     
-    subplot(5,length(trialTypes),matIP(2,ip))
+    if ~isempty(strfind( Analysis.Properties.TrialNames{tT},'Opto'))
+        if optoStimOffset-optoStimOnset>1e-6
+            plot([optoStimOnset optoStimOffset],[maxY*.9 maxY*.9],'Color',[1. 0.3333   0],'LineWidth',2,'LineStyle','-');
+        end
+    end
+    
+    box off  
+    ylabel('DF/F0')
+    title([ {strrep(DefaultParam.FileList(1:end-4),'_',' ');   Analysis.Properties.TrialNames{tT}  }]);          
+    ax=gca;ax.XLim=[-5 5];ax.YLim =[minY(1) maxYY(1)+.1];
+    
+    
+     
+    subplot(6,length(trialTypes),matIP(2,ip));%ip=ip+1;
+   % yyaxis left
+    shadedErrorBar(timeV,nanmean(abs(tempWheel(:,1:end)),1),...
+        nanstd(abs(tempWheel(:,1:end)),[],1)./(sqrt(size(tempWheel,1))),'-r',1)
+    maxY = max(nanmean(abs(tempWheel(:,1:end))))+ max(0.5*nanstd(abs(tempWheel(:,1:end)))./(sqrt(size(tempPhoto_470,1))))+1;
+    maxY(isnan(maxY))=0;
+    hold on
+    plot([0 0],[0 maxY],'Color',[.5 .5 .5]);
+    plot(Analysis.AllData.CueTime(1,:),[maxY maxY].*.75,'Color',[.7 .7 .7],'LineWidth',2,'LineStyle','-');
+    if ~isempty(strfind( Analysis.Properties.TrialNames{tT},'Opto'))
+        if ~isempty(strfind( Analysis.Properties.TrialNames{tT},'Opto'))
+            if optoStimOffset-optoStimOnset>1e-6
+                plot([optoStimOnset optoStimOffset],[maxY*.9 maxY*.9],'Color',[1. 0.3333   0],'LineWidth',2,'LineStyle','-');
+            end
+        end
+    end
+    ylabel('Velocity (cm/s)')
+    ax=gca;ax.XLim=[-5 5];ax.YLim =[minY(2) maxYY(2)+.1];
+   
+    
+    
+    subplot(6,length(trialTypes),matIP(3,ip))
     shadedErrorBar(Analysis.AllData.Licks.Bin{1}(2:end) ,nanmean(tempLick,1),...
         nanstd(tempLick,[],1)./(sqrt(size(tempWheel,1))),'-g',1)
     xlabel('Time (sec)')
@@ -72,12 +120,14 @@ for tT = trialTypes
     maxY(isnan(maxY))=0;
     plot([0 0],[0 maxY],'Color',[.5 .5 .5]);
     plot(Analysis.AllData.CueTime(1,:),[maxY  maxY ],'Color',[.7 .7 .7],'LineWidth',2,'LineStyle','-');
+    if ~isempty(strfind( Analysis.Properties.TrialNames{tT},'Opto'))
     if optoStimOffset-optoStimOnset>1e-6
         plot([optoStimOnset optoStimOffset],[maxY*.9 maxY*.9],'Color',[1. 0.3333   0],'LineWidth',2,'LineStyle','-');
     end
-    ax=gca;ax.XLim=[-5 5];
+    end
+    ax=gca;ax.XLim=[-5 5];ax.YLim =[minY(3) maxYY(3)+.1]
 
-    subplot(5,length(trialTypes),matIP(3,ip))
+    subplot(6,length(trialTypes),matIP(4,ip))
     imagesc(timeD,trialsNb,tempPhoto_470,[p10(1) p90(1)+.1]);hold on
     pos=get(gca,'pos');
     c=colorbar('location','eastoutside',...
@@ -85,15 +135,17 @@ for tT = trialTypes
     c.Label.String ='DF/F0';
     plot([0 0],[0 max(trialsNb)],'-k');c.Label.FontSize =7;
     plot([Analysis.AllData.CueTime(1,1) Analysis.AllData.CueTime(1,1)],[0 max(trialsNb)],'Color',[.7 .7 .7] );
+    if ~isempty(strfind( Analysis.Properties.TrialNames{tT},'Opto'))
     if optoStimOffset-optoStimOnset>1e-6
         plot([optoStimOnset optoStimOnset],[0 max(trialsNb)],'Color',[1. 0.3333   0] );
+    end
     end
     if tT==1
         ylabel('Trial Nb')
     end
     ax=gca; ax.XLim=[-5 5];
     
-    subplot(5,length(trialTypes),matIP(4,ip))
+    subplot(6,length(trialTypes),matIP(5,ip))
     imagesc(timeV,trialsNb,abs(tempWheel),[p10(2) p90(2)+.1]);hold on
     pos=get(gca,'pos');
     c=colorbar('location','eastoutside',...
@@ -101,15 +153,17 @@ for tT = trialTypes
     c.Label.String ='Velocity cm/s';c.Label.FontSize =7;
     plot([0 0],[0 max(trialsNb)],'-k');
     plot([Analysis.AllData.CueTime(1,1) Analysis.AllData.CueTime(1,1)],[0 max(trialsNb)],'Color',[.7 .7 .7] );
+    if ~isempty(strfind( Analysis.Properties.TrialNames{tT},'Opto'))
     if optoStimOffset-optoStimOnset>1e-6
         plot([optoStimOnset optoStimOnset],[0 max(trialsNb)],'Color',[1. 0.3333   0] );
+    end
     end
     if tT==1
        ylabel('Trial Nb')
     end
     ax=gca; ax.XLim=[-5 5];
     
-    subplot(5,length(trialTypes),matIP(5,ip))
+    subplot(6,length(trialTypes),matIP(6,ip))
     imagesc(Analysis.AllData.Licks.Bin{1}(2:end) ,trialsNb,tempLick,[p10(3)  max(p90(3),1)]);hold on
     pos=get(gca,'pos');
     c=colorbar('location','eastoutside',...
@@ -117,8 +171,10 @@ for tT = trialTypes
     c.Label.String ='Lick Rate (Hz)';c.Label.FontSize =7;
     plot([0 0],[0 max(trialsNb)],'-k');
     plot([Analysis.AllData.CueTime(1,1) Analysis.AllData.CueTime(1,1)],[0 max(trialsNb)],'Color',[.7 .7 .7] );
+    if ~isempty(strfind( Analysis.Properties.TrialNames{tT},'Opto'))
     if optoStimOffset-optoStimOnset>1e-6
         plot([optoStimOnset optoStimOnset],[0 max(trialsNb)],'Color',[1. 0.3333  0] );
+    end
     end
     xlabel('Time (sec)')
     if tT==1
