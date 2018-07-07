@@ -73,7 +73,9 @@ switch action
         for i=1:size(trialSequence)
             for TrialType=1:size(trialSequence,1)
                 if trialSequence(i)==TrialType
-                    trialsPlot(i)=plot(i,trialMatrix(TrialType,3),'LineStyle','none','marker',char(trialMatrix(TrialType,7)),'MarkerFaceColor','b', 'MarkerEdgeColor','k','MarkerSize',MS_trial);
+                    trialsPlot(i)=plot(i,trialMatrix(TrialType,3),'LineStyle','none','marker',...
+                        char(trialMatrix(TrialType,7)),'MarkerFaceColor','b', 'MarkerEdgeColor','k',...
+                        'MarkerSize',MS_trial);
                 end
             end
         end

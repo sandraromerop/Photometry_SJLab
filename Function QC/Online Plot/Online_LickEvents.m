@@ -1,4 +1,4 @@
-function [outcome, curLickEvents]=Online_LickEvents(trialsMatrix, currentTrial, currentTrialType, StateToZero)
+function [outcome, curLickEvents, varargout]=Online_LickEvents(trialsMatrix, currentTrial, currentTrialType, StateToZero)
 %[outcome, curLickEvents]=CurrentTrialEvents(BpodSystem, trialsMatrix, currentTrial, currentTrialType, time)
 %
 %This function extracts the outcome (absence or presence of neverlickedstate) and the licking events
@@ -9,8 +9,8 @@ function [outcome, curLickEvents]=Online_LickEvents(trialsMatrix, currentTrial, 
 %Output arguments can be used as an input argument for Online_LickPlot function.
 %
 %function written by Quentin for CuedReinforcers bpod protocol
-
-global BpodSystem
+ 
+global BpodSystem S 
 % %% Extract the outcome to update the trialsplot function
 % if trialsMatrix(currentTrialType,6)==1;
 %     if isnan(BpodSystem.Data.RawEvents.Trial{1,currentTrial}.States.NeverLickedState(1,1))==1
@@ -30,9 +30,15 @@ try
 end
 %% Outcome : green if the animal has collected the reward / showed anticipatory licks
 if sum(curLickEvents>-1 & curLickEvents<2)>1
-    outcome='g';
+    outcome(1)='g';
+    if nargout>2
+        varargout{1} = 1;
+    end
 else
-    outcome='r';
+    outcome(1)='r';
+    if nargout>2
+        varargout{1} = 0;
+    end
 end
 
 end

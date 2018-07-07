@@ -5,7 +5,8 @@ labelx='Time (sec)'; labely='DF/F';
 minx=S.GUI.TimeMin; maxx=S.GUI.TimeMax;  xstep=1;    xtickvalues=minx:xstep:maxx;
 miny=S.GUI.NidaqMin; maxy=S.GUI.NidaqMax;
 MeanThickness=2;
-MeanColor = [0.7 0 0.2];
+MeanColor(:,1) = [0.6003    0.9    0.6003 ];
+MeanColor(:,2) = [0.9500    0.3166       0];
 newTraceColor = [0.8 0.1 0.3];
 
 switch action
@@ -52,7 +53,8 @@ switch action
             ylim auto;
             set(photosubplot(i),'XLim',[minx maxx],'XTick',xtickvalues,'YLim',[miny maxy]);
             rewplot(i)=plot([0 0],[-1,1],'-b');
-            meanplot(i)=plot([-5 5],[0 0],'-r');
+            meanplot(i,1)=plot([-5 5],[0 0],'-r');
+            meanplot(i,2)=plot([-5 5],[0 0],'-r');
             hold off
         end
 
@@ -70,8 +72,9 @@ switch action
         figData.lastplot470=lastplot470;
         figData.lastplot405=lastplot405;
         figData.photosubplot=photosubplot;
-        figData.meanplot=meanplot;
-
+        figData.meanplotHit=meanplot(:,1);
+        figData.meanplotNonHit = meanplot(:,2);
+        
     case 'update'
         %% Update last recording plot
         set(figData.lastplotRaw, 'Xdata',nidaqRaw(:,1),'YData',nidaqRaw(:,2));
@@ -82,6 +85,7 @@ switch action
         
         StateToZero = S.Names.StateToZero{S.GUI.StateToZero};
         TimeToZero=BpodSystem.Data.RawEvents.Trial{1,end}.States.(StateToZero)(1,1);
+
 %         for i=1:length(subPlotTitles)
 %             photosubplot(i)=subplot(ceil(length(subPlotTitles)/2)+1,2,i+2);
 %             hold on
@@ -99,11 +103,17 @@ switch action
         dataSize=size(allData,2);
         allData(:,dataSize+1)=newData470(:,3);
         set(figData.photosubplot(curTrialType), 'UserData', allData);
-        meanData=mean(allData,2);
-
+        meanData = ones(size(allData,1),2)*nan;
+        if ~isfield(S, 'TrialOutcomes')
+            S.TrialOutcomes = ones(size(allData,1),1);
+        end
+        meanData(:,1)=nanmean(allData(:,  S.TrialOutcomes==1  ),2);
+        meanData(:,2)=nanmean(allData(:,  S.TrialOutcomes==0  ),2);
         curSubplot=figData.photosubplot(curTrialType);
-        set(figData.meanplot(curTrialType),'Xdata',newData470(:,1),'YData',meanData,...
-                                           'color',MeanColor,'LineWidth',MeanThickness);
+        set(figData.meanplotHit(curTrialType),'Xdata',newData470(:,1),'YData',meanData(:,1),...
+                                           'color',MeanColor(:,1),'LineWidth',MeanThickness);
+        set(figData.meanplotNonHit(curTrialType),'Xdata',newData470(:,1),'YData',meanData(:,2),...
+                                           'color',MeanColor(:,2),'LineWidth',MeanThickness);
         set(curSubplot,'NextPlot','add');
 %         plot([BpodSystem.Data.RawEvents.Trial{1,end}.States.('SoundDelivery')(1,1)-TimeToZero ...
 %                 BpodSystem.Data.RawEvents.Trial{1,end}.States.('SoundDelivery')(1,1)-TimeToZero],[-1,1],'-g');
