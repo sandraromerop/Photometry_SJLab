@@ -36,35 +36,7 @@ global S %BpodSystem
     end
  
     S.Names.Rig=Param.rig;
-%% General Parameters    
-    
-    S.GUI.Phase = 1;
-    S.GUIMeta.Phase.Style='popupmenu';
-    S.GUIMeta.Phase.String=phaseName;
-    S.GUI.Wheel=1;
-    S.GUIMeta.Wheel.Style='checkbox';
-    S.GUIMeta.Wheel.String='Auto';
-    S.GUI.Photometry=1;
-    S.GUIMeta.Photometry.Style='checkbox';
-    S.GUIMeta.Photometry.String='Auto';
-    S.GUI.Modulation=1;
-    S.GUIMeta.Modulation.Style='checkbox';
-    S.GUIMeta.Modulation.String='Auto';
-    S.GUI.DbleFibers=0;
-    S.GUIMeta.DbleFibers.Style='checkbox';
-    S.GUIMeta.DbleFibers.String='Auto';
-    S.GUIPanels.General={'Phase','Wheel','Photometry','Modulation','DbleFibers'};    
-
-    S.GUI.PreCue=TrialSettings.PreCue;
-    S.GUI.DelayA=TrialSettings.DelayA;
-    S.GUI.DelayB=TrialSettings.DelayB;
-    S.GUI.DelayC=TrialSettings.DelayC;
-    S.GUI.DelayD=TrialSettings.DelayD;
-    S.GUI.DelayIncrement=TrialSettings.DelayIncrement;
-    S.GUI.PostOutcome=TrialSettings.PostOutcome;
-    S.GUI.TimeNoLick=TrialSettings.TimeNoLick;
-    S.GUI.ITI=TrialSettings.ITI;        
-    S.GUIPanels.Timing={'PreCue','DelayA','DelayB','DelayC','DelayD','DelayIncrement','PostOutcome','TimeNoLick','ITI'};
+%% Notes
     
     % -------------------
     S.GUIMeta.FiberLocation.Style='edittext';
@@ -80,123 +52,149 @@ global S %BpodSystem
     S.GUI.SessionNotes =' ';
     S.GUIPanels.ExperimentNotes ={'FiberLocation','OptoLocation','OptoPower','MouseWeight','SessionNotes'};
     
+    
+    S.GUI.Phase = 1;
+    S.GUIMeta.Phase.Style='popupmenu';
+    S.GUIMeta.Phase.String=phaseName;
+    S.GUI.Wheel=1;
+    S.GUIMeta.Wheel.Style='checkbox';
+    S.GUIMeta.Wheel.String='Auto';
+    S.GUI.Photometry=1;
+    S.GUIMeta.Photometry.Style='checkbox';
+    S.GUIMeta.Photometry.String='Auto';
+    S.GUI.Modulation=1;
+    S.GUIMeta.Modulation.Style='checkbox';
+    S.GUIMeta.Modulation.String='Auto';
+
+    S.GUI.DbleFibers=0;
+    S.GUIMeta.DbleFibers.Style='checkbox';
+    S.GUIMeta.DbleFibers.String='Auto';
+    
+    S.GUIPanels.General={'Phase','Wheel','Photometry','Modulation','DbleFibers'};  
+    
+    S.GUITabs.General ={'ExperimentNotes','General'};
+%% General Parameters    
+    
+  
+    S.GUI.PreCue=TrialSettings.PreCue;
+    
+    S.GUI.Delay.DelayA = TrialSettings.DelayA;
+    S.GUI.Delay.DelayB = TrialSettings.DelayB;
+    S.GUI.Delay.DelayC = TrialSettings.DelayC;
+    S.GUI.Delay.DelayD = TrialSettings.DelayD;
+    S.GUIMeta.Delay.Style ='table';
+    
+    S.GUI.DelayDistributionEnd.A = 0;
+    S.GUI.DelayDistributionEnd.B = 0;
+    S.GUI.DelayDistributionEnd.C = 0;
+    S.GUI.DelayDistributionEnd.D = 0;
+    S.GUIMeta.DelayDistributionEnd.Style ='table';
+    
+    S.GUI.DelayDistributionStep.A = 0;
+    S.GUI.DelayDistributionStep.B = 0;
+    S.GUI.DelayDistributionStep.C = 0;
+    S.GUI.DelayDistributionStep.D = 0;
+    S.GUIMeta.DelayDistributionStep.Style ='table';
+    
+	S.GUI.DelayDistributionMu.A = 0;
+    S.GUI.DelayDistributionMu.B = 0;
+    S.GUI.DelayDistributionMu.C = 0;
+    S.GUI.DelayDistributionMu.D = 0;
+    S.GUIMeta.DelayDistributionMu.Style ='table';
+    
+    S.GUI.DelayDistributionSigma.A = 0;
+    S.GUI.DelayDistributionSigma.B = 0;
+    S.GUI.DelayDistributionSigma.C = 0;
+    S.GUI.DelayDistributionSigma.D = 0;
+    S.GUIMeta.DelayDistributionSigma.Style ='table';
+    
+    S.GUI.PostOutcome=TrialSettings.PostOutcome;
+    S.GUI.TimeNoLick=TrialSettings.TimeNoLick;
+    S.GUI.ITI=TrialSettings.ITI;        
+    
+    S.GUIPanels.Timing={'PreCue','Delay','DelayDistributionEnd','DelayDistributionStep','DelayDistributionMu','DelayDistributionSigma','PostOutcome','TimeNoLick','ITI'};
     % -------------------
 
 
-    S.GUITabs.General={'Timing','General','ExperimentNotes'};
+    S.GUITabs.Timing={'Timing'};
 
 
     %% Trial Arrangement
-        %%%%f sinish gui-- test on Setup
         
     % Trial arangement type 
-    S.GUI.MaxTrials=300;    
-    S.GUI.TrialsOrder = 1;
-    S.GUIMeta.TrialsOrder.Style='popupmenu';
-    S.GUIMeta.TrialsOrder.String={'randomize','block'}; 
-    
-    S.GUIPanels.TrialSettings={ 'MaxTrials','TrialsOrder'};
-        
-    switch S.GUIMeta.Phase.String
-      
+    switch S.GUIMeta.Phase.String      
         case 'BeliefState'
         
-        S.GUI.ProbA =   TrialSettings.ProbA;
-        S.GUI.ProbA =   TrialSettings.ProbA;
-        S.GUI.ProbAOmission =   TrialSettings.ProbAOmission;
-        S.GUI.ProbB =   TrialSettings.ProbB;
-        S.GUI.ProbBOmission =   TrialSettings.ProbBOmission;
-        S.GUI.ProbC =   TrialSettings.ProbC;
-        S.GUI.ProbCOmission =   TrialSettings.ProbCOmission;    
-        S.GUI.ProbD =   TrialSettings.ProbD;
-        S.GUI.ProbDOmission =   TrialSettings.ProbDOmission;    
-        S.GUI.ProbUncuedRwd =   TrialSettings.ProbUncuedRwd;
-        S.GUI.ProbUncuedOmission =   TrialSettings.ProbUncuedOmission;
-        S.GUI.ProbAOptoCue =   TrialSettings.ProbAOptoCue;
-        S.GUI.ProbBOptoCue =   TrialSettings.ProbBOptoCue;
-        S.GUI.ProbCOptoCue =   TrialSettings.ProbCOptoCue;
-        S.GUI.ProbDOptoCue =   TrialSettings.ProbDOptoCue;
-        S.GUI.ProbAOptoOutcome =   TrialSettings.ProbAOptoOutcome;
-        S.GUI.ProbBOptoOutcome =   TrialSettings.ProbBOptoOutcome;
-        S.GUI.ProbCOptoOutcome =   TrialSettings.ProbCOptoOutcome;
-        S.GUI.ProbDOptoOutcome =   TrialSettings.ProbDOptoOutcome;
-                
-        S.GUIPanels.Probabilities={'ProbA','ProbAOmission',...
-            'ProbB','ProbBOmission',...
-            'ProbC','ProbCOmission',...
-            'ProbD','ProbDOmission',...
-            'ProbUncuedRwd','ProbUncuedOmission',...
-            'ProbAOptoCue','ProbBOptoCue','ProbCOptoCue','ProbDOptoCue',...
-            'ProbAOptoOutcome','ProbBOptoOutcome','ProbCOptoOutcome','ProbDOptoOutcome'};
+        S.GUI.ProbA.A =   TrialSettings.ProbA;
+        S.GUI.ProbA.AOmission =   TrialSettings.ProbAOmission;
+        S.GUI.ProbA.AOptoCue =   TrialSettings.ProbAOptoCue;
+        S.GUI.ProbA.AOptoOutcome =   TrialSettings.ProbAOptoOutcome;
+        S.GUIMeta.ProbA.Style ='table';
+        
+        S.GUI.ProbB.B =   TrialSettings.ProbB;
+        S.GUI.ProbB.BOmission =   TrialSettings.ProbBOmission;
+        S.GUI.ProbB.BOptoCue =   TrialSettings.ProbBOptoCue;
+        S.GUI.ProbB.BOptoOutcome =   TrialSettings.ProbBOptoOutcome;
+        S.GUIMeta.ProbB.Style ='table';
+        
+        S.GUI.ProbC.C =   TrialSettings.ProbC;
+        S.GUI.ProbC.COmission =   TrialSettings.ProbCOmission;    
+        S.GUI.ProbC.COptoCue =   TrialSettings.ProbCOptoCue;
+        S.GUI.ProbC.COptoOutcome =   TrialSettings.ProbCOptoOutcome;
+        S.GUIMeta.ProbC.Style ='table';
+        
+        S.GUI.ProbD.D =   TrialSettings.ProbD;
+        S.GUI.ProbD.DOmission =   TrialSettings.ProbDOmission;    
+        S.GUI.ProbD.DOptoCue =   TrialSettings.ProbDOptoCue;
+        S.GUI.ProbD.DOptoOutcome =   TrialSettings.ProbDOptoOutcome;
+        S.GUIMeta.ProbD.Style ='table';
+        
+        S.GUI.ProbUncued.UncuedRwd =   TrialSettings.ProbUncuedRwd;
+        S.GUI.ProbUncued.UncuedOmission =   TrialSettings.ProbUncuedOmission;
+        S.GUIMeta.ProbUncued.Style ='table';
+        
+        S.GUIPanels.Probabilities={'ProbA', 'ProbB',...
+            'ProbC', 'ProbD' ...
+            'ProbUncued'};
         
         
-        S.GUI.OrderA =   TrialSettings.OrderA;
-        S.GUI.OrderAOmission =   TrialSettings.OrderAOmission;
-        S.GUI.OrderB =   TrialSettings.OrderB;
-        S.GUI.OrderBOmission =   TrialSettings.OrderBOmission;
-        S.GUI.OrderC =   TrialSettings.OrderC;
-        S.GUI.OrderCOmission =   TrialSettings.OrderCOmission;
-        S.GUI.OrderD =   TrialSettings.OrderD;
-        S.GUI.OrderDOmission =   TrialSettings.OrderDOmission;
-        S.GUI.OrderUncuedRwd =   TrialSettings.OrderUncuedRwd;
-        S.GUI.OrderUncuedOmission =   TrialSettings.OrderUncuedOmission;
-        S.GUI.OrderAOptoCue =   TrialSettings.OrderAOptoCue;
-        S.GUI.OrderBOptoCue =   TrialSettings.OrderBOptoCue;
-        S.GUI.OrderCOptoCue =   TrialSettings.OrderCOptoCue;
-        S.GUI.OrderDOptoCue =   TrialSettings.OrderDOptoCue;
-        S.GUI.OrderAOptoOutcome =   TrialSettings.OrderAOptoOutcome;
-        S.GUI.OrderBOptoOutcome =   TrialSettings.OrderBOptoOutcome;
-        S.GUI.OrderCOptoOutcome =   TrialSettings.OrderCOptoOutcome;
-        S.GUI.OrderDOptoOutcome =   TrialSettings.OrderDOptoOutcome;
-                
-                S.GUIMeta.OrderA.Style='popupmenu';
-                S.GUIMeta.OrderA.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderAOmission.Style='popupmenu';
-                S.GUIMeta.OrderAOmission.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderB.Style='popupmenu';
-                S.GUIMeta.OrderB.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderBOmission.Style='popupmenu';
-                S.GUIMeta.OrderBOmission.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderC.Style='popupmenu';
-                S.GUIMeta.OrderC.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderCOmission.Style='popupmenu';
-                S.GUIMeta.OrderCOmission.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderD.Style='popupmenu';
-                S.GUIMeta.OrderD.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderDOmission.Style='popupmenu';
-                S.GUIMeta.OrderDOmission.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderUncuedRwd.Style='popupmenu';
-                S.GUIMeta.OrderUncuedRwd.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderUncuedOmission.Style='popupmenu';
-                S.GUIMeta.OrderUncuedOmission.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};            
-                S.GUIMeta.OrderAOptoCue.Style='popupmenu';
-                S.GUIMeta.OrderAOptoCue.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderBOptoCue.Style='popupmenu';
-                S.GUIMeta.OrderBOptoCue.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderCOptoCue.Style='popupmenu';
-                S.GUIMeta.OrderCOptoCue.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderDOptoCue.Style='popupmenu';
-                S.GUIMeta.OrderDOptoCue.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderAOptoOutcome.Style='popupmenu';
-                S.GUIMeta.OrderAOptoOutcome.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderBOptoOutcome.Style='popupmenu';
-                S.GUIMeta.OrderBOptoOutcome.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderCOptoOutcome.Style='popupmenu';
-                S.GUIMeta.OrderCOptoOutcome.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                S.GUIMeta.OrderDOptoOutcome.Style='popupmenu';
-                S.GUIMeta.OrderDOptoOutcome.String={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,nan};
-                
-                
-       S.GUIPanels.Order={ 'OrderA','OrderAOmission',...
-            'OrderB','OrderBOmission',...
-            'OrderC','OrderCOmission',...
-            'OrderD','OrderDOmission',...
-            'OrderUncuedRwd','OrderUncuedOmission',...
-            'OrderAOptoCue','OrderBOptoCue','OrderCOptoCue','OrderDOptoCue',...
-            'OrderAOptoOutcome','OrderBOptoOutcome','OrderCOptoOutcome','OrderDOptoOutcome'};
-    end
-        S.GUITabs.TrialArrangement={ 'TrialSettings','Probabilities','Order'};
+        S.GUI.MaxTrials=300;    
+        S.GUI.TrialsOrder = 1;
+        S.GUIMeta.TrialsOrder.Style='popupmenu';
+        S.GUIMeta.TrialsOrder.String={'randomize','block'}; 
 
+        S.GUI.OrderA.A =   TrialSettings.OrderA;
+        S.GUI.OrderA.AOmission =   TrialSettings.OrderAOmission;
+        S.GUI.OrderA.AOptoCue =   TrialSettings.OrderAOptoCue;
+        S.GUI.OrderA.AOptoOutcome =   TrialSettings.OrderAOptoOutcome;
+        S.GUIMeta.OrderA.Style ='table';
+        S.GUI.OrderB.B =   TrialSettings.OrderB;
+        S.GUI.OrderB.BOmission =   TrialSettings.OrderBOmission;
+        S.GUI.OrderB.BOptoCue =   TrialSettings.OrderBOptoCue;
+        S.GUI.OrderB.BOptoOutcome =   TrialSettings.OrderBOptoOutcome;
+        S.GUIMeta.OrderB.Style ='table';
+        S.GUI.OrderC.C =   TrialSettings.OrderC;
+        S.GUI.OrderC.COmission =   TrialSettings.OrderCOmission;
+        S.GUI.OrderC.COptoCue =   TrialSettings.OrderCOptoCue;
+        S.GUI.OrderC.COptoOutcome =   TrialSettings.OrderCOptoOutcome;
+        S.GUIMeta.OrderC.Style ='table';
+        S.GUI.OrderD.D =   TrialSettings.OrderD;
+        S.GUI.OrderD.DOmission =   TrialSettings.OrderDOmission;
+        S.GUI.OrderD.DOptoCue =   TrialSettings.OrderDOptoCue;
+        S.GUI.OrderD.DOptoOutcome =   TrialSettings.OrderDOptoOutcome;
+        S.GUIMeta.OrderD.Style ='table';
+        S.GUI.OrderUncued.UncuedRwd =   TrialSettings.OrderUncuedRwd;
+        S.GUI.OrderUncued.UncuedOmission =   TrialSettings.OrderUncuedOmission;
+        S.GUIMeta.OrderUncued.Style ='table';
+        
+                 
+       S.GUIPanels.Order={'MaxTrials','TrialsOrder', 'OrderA',...
+            'OrderB',...
+            'OrderC',...
+            'OrderD',...
+            'OrderUncued'};
+    end
+	S.GUITabs.TrialArrangement={ 'Probabilities','Order'};
     %% Task Parameters
 
     S.GUI.SoundType=2;
@@ -250,13 +248,13 @@ global S %BpodSystem
 	S.GUI.NidaqDuration=TrialSettings.NidaqDuration;
     S.GUI.NidaqSamplingRate=TrialSettings.NidaqSamplingRate;
     S.GUI.LED1_Wavelength=TrialSettings.LED1_Wavelength;
-    S.GUI.LED1_Amp=Param.LED1Amp;
+    S.GUI.LED1_Amp=TrialSettings.LED1_Amp;
     S.GUI.LED1_Freq=TrialSettings.LED1_Freq;
     S.GUI.LED2_Wavelength=TrialSettings.LED2_Wavelength;
-    S.GUI.LED2_Amp=Param.LED2Amp;
+    S.GUI.LED2_Amp=TrialSettings.LED2_Amp;
     S.GUI.LED2_Freq=TrialSettings.LED2_Freq;
     S.GUI.LED1b_Wavelength=TrialSettings.LED1b_Wavelength;
-    S.GUI.LED1b_Amp=Param.LED1bAmp;
+    S.GUI.LED1b_Amp=TrialSettings.LED1b_Amp;
     S.GUI.LED1b_Freq=TrialSettings.LED1b_Freq;
 
     S.GUIPanels.Photometry={'NidaqDuration','NidaqSamplingRate',...

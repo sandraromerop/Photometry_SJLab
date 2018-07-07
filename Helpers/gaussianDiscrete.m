@@ -1,6 +1,6 @@
 function valueSeq = gaussianDiscrete(values, maxTrials, mu, sigma)
 probTrials = normpdf(values,mu,sigma);
-orderTrials = 1:length(x);
+orderTrials = 1:length(values);
 trialSeq = blockIndices(maxTrials, probTrials, orderTrials);
-valueSeq = x(trialSeq(randperm(length(trialSeq))));
+valueSeq = values(trialSeq(randperm(length(trialSeq))));
 end
