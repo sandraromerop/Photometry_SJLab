@@ -1,0 +1,179 @@
+function OperantConditioned
+
+% Operant + conditioned reinforcement
+
+% SETUP
+% You will need:
+% - A Bpod MouseBox (or equivalent) configured with 3 ports.
+% - Place masking tape over the center port (Port 2).
+global BpodSystem S
+
+%% Define parameters
+S = BpodSystem.ProtocolSettings; % Load settings chosen in launch manager into current workspace as a struct called S
+ParamPC=BpodParam_PCdep();
+
+if isempty(fieldnames(S))  % If settings file was an empty struct, populate struct with default settings
+    S.BpodPath = BpodSystem.BpodPath;
+    OperantConditioned_TaskParameters(ParamPC)
+end
+% Initialize parameter GUI plugin
+BpodParameterGUI('init', S);
+%% Define trials
+MaxTrials = S.GUI.MaxTrials ;
+switch S.GUI.RewardSide
+    case 1
+        TrialTypes = ones(1,MaxTrials);
+    case 2
+        TrialTypes = 2*ones(1,MaxTrials);
+end
+BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will be added here.
+
+%% Initialize plots
+% TrialType Outcome Plot (displays each future trial type, and scores completed trials as correct/incorrect
+BpodSystem.ProtocolFigures.SideOutcomePlotFig = figure('Position', [200 200 1000 200],'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
+BpodSystem.GUIHandles.SideOutcomePlot = axes('Position', [.075 .3 .89 .6]);
+SideOutcomePlot(BpodSystem.GUIHandles.SideOutcomePlot,'init',TrialTypes);
+% Bpod Notebook (to record text notes about the session or individual trials)
+% BpodNotebook('init');
+
+for currentTrial = 1:MaxTrials
+    S = BpodParameterGUI('sync', S); % Sync parameters with BpodParameterGUI plugin
+%     R = GetValveTimes(S.GUI.RewardAmount, [4 6]); 
+%     LeftValveTime = R(1); RightValveTime = R(2); % Update reward amounts
+            
+    if S.GUI.RewardSide==1
+        StimulusOutput = {'PWM4', 255}; 
+        LeftPokeAction = 'LeftRewardDelay'; 
+        RightPokeAction = 'OmissionDelay'; 
+        valveTime = 0.5%GetValveTimes(S.GUI.RewardAmount, [4]); 
+        portIn = 'Port4In';
+    elseif S.GUI.RewardSide==2
+        StimulusOutput = {'PWM6', 255};        
+        LeftPokeAction = 'OmissionDelay';
+        RightPokeAction =  'RightRewardDelay'; 
+        valveTime = 0.5%GetValveTimes(S.GUI.RewardAmount, [6]); 
+        portIn = 'Port6In';
+    end
+    
+    switch S.GUIMeta.Phase.String
+        case 'Simple Operant'
+            precueDuration =0; precueOutput = {}; 
+            interCueDelay=0;
+        case 'Conditioned Reinforcerment'
+            precueDuration =S.GUI.precueDuration ;precueOutput = {'PWM5', 255}; 
+            interCueDelay=S.GUI.interCueDelay;
+    end
+    
+            sma = NewStateMatrix(); % Assemble state matrix
+            
+            sma = AddState(sma, 'Name', 'TrialStart', ...
+                    'Timer', 0,...
+                    'StateChangeConditions', {'Tup', 'Precue'},...
+                    'OutputActions', {}); 
+                
+             sma = AddState(sma, 'Name', 'Precue', ...
+                'Timer', precueDuration ,...
+                'StateChangeConditions', { 'Tup', 'interCueDelay'},...
+                'OutputActions', precueOutput); 
+            
+             sma = AddState(sma, 'Name', 'interCueDelay', ...
+                'Timer', interCueDelay ,...
+                'StateChangeConditions', { 'Tup', 'WaitForResponse'},...
+                'OutputActions', {});            
+            
+            
+             sma = AddState(sma, 'Name', 'WaitForResponse', ...
+                'Timer', S.GUI.WaitForResponseTime,...
+                'StateChangeConditions', {'Port4In', LeftPokeAction, ...
+                'Port6In', RightPokeAction, 'Tup', 'exit'},...
+                'OutputActions', StimulusOutput);       
+            
+            
+            sma = AddState(sma, 'Name', 'LeftRewardDelay', ...
+                'Timer', S.GUI.RewardDelay,...
+                'StateChangeConditions', {'Tup', 'LeftReward'},...%, 'Port4Out', 'CorrectEarlyWithdrawal'},...
+                'OutputActions', {}); 
+            
+            sma = AddState(sma, 'Name', 'RightRewardDelay', ...
+                'Timer', S.GUI.RewardDelay,...
+                'StateChangeConditions', {'Tup', 'RightReward'},...%, 'Port6Out', 'CorrectEarlyWithdrawal'},...
+                'OutputActions', {}); 
+            
+            
+            sma = AddState(sma, 'Name', 'LeftReward', ...
+                'Timer', valveTime,...
+                'StateChangeConditions', {'Tup', 'Drinking'},...
+                'OutputActions', {'ValveState', 1}); 
+            
+            sma = AddState(sma, 'Name', 'RightReward', ...
+                'Timer', valveTime,...
+                'StateChangeConditions', {'Tup', 'Drinking'},...
+                'OutputActions', {'ValveState', 4}); 
+            
+            
+            sma = AddState(sma, 'Name', 'Punishment', ...
+                'Timer', S.GUI.RewardDelay + valveTime  ,...
+                'StateChangeConditions', {'Tup', 'exit'},...
+                'OutputActions', {});
+            
+            
+%            sma = AddState(sma, 'Name', 'CorrectEarlyWithdrawal', ...
+%                 'Timer', 0,...
+%                 'StateChangeConditions', {'Tup', 'exit'},...
+%                 'OutputActions', {}); 
+            sma = AddState(sma, 'Name', 'PostOutcome', ...
+                'Timer', S.GUI.TimePostOutcome,...
+                'StateChangeConditions', {'Tup', 'NoLick'},...%'Port4Out', 'DrinkingGrace', 'Port6Out', 'DrinkingGrace'},...
+                'OutputActions', {});
+            
+            sma = AddState(sma,'Name', 'NoLick', ...
+                    'Timer', S.GUI.TimeNoLick,...
+                    'StateChangeConditions', {'Tup','ITI',portIn,'RestartNoLick'},...
+                    'OutputActions', { });
+            sma = AddState(sma,'Name', 'RestartNoLick', ...
+                    'Timer', 0,...
+                    'StateChangeConditions', {'Tup', 'NoLick',},...
+                    'OutputActions', { });  
+%             sma = AddState(sma, 'Name', 'DrinkingGrace', ...
+%                 'Timer', .5,...
+%                 'StateChangeConditions', {'Tup', 'exit', 'Port1In', 'Drinking', 'Port3In', 'Drinking'},...
+%                 'OutputActions', {});
+            sma = AddState(sma,'Name', 'ITI',...
+                    'Timer',S.GUI.ITI,...
+                    'StateChangeConditions', {'Tup', 'exit'},...
+                    'OutputActions',{});
+    
+        
+    SendStateMatrix(sma);
+    RawEvents = RunStateMatrix;
+    if ~isempty(fieldnames(RawEvents)) % If trial data was returned
+        BpodSystem.Data = AddTrialEvents(BpodSystem.Data,RawEvents); % Computes trial events from raw data
+%         BpodSystem.Data = BpodNotebook('sync', BpodSystem.Data); % Sync with Bpod notebook plugin
+        BpodSystem.Data.TrialSettings(currentTrial) = S; % Adds the settings used for the current trial to the Data struct (to be saved after the trial ends)
+        BpodSystem.Data.TrialTypes(currentTrial) = TrialTypes(currentTrial); % Adds the trial type of the current trial to data
+        UpdateSideOutcomePlot(TrialTypes, BpodSystem.Data);
+        SaveBpodSessionData; % Saves the field BpodSystem.Data to the current data file
+    end
+    HandlePauseCondition; % Checks to see if the protocol is paused. If so, waits until user resumes.
+    if BpodSystem.BeingUsed == 0
+        return
+    end
+   
+end
+
+
+function UpdateSideOutcomePlot(TrialTypes, Data)
+global BpodSystem
+Outcomes = zeros(1,Data.nTrials);
+for x = 1:Data.nTrials
+    if ~isnan(Data.RawEvents.Trial{x}.States.Drinking(1))
+        Outcomes(x) = 1;
+    elseif ~isnan(Data.RawEvents.Trial{x}.States.OmissionDelay(1))
+        Outcomes(x) = 0;
+    elseif ~isnan(Data.RawEvents.Trial{x}.States.CorrectEarlyWithdrawal(1))
+        Outcomes(x) = 2;
+    else
+        Outcomes(x) = 3;
+    end
+end
+SideOutcomePlot(BpodSystem.GUIHandles.SideOutcomePlot,'update',Data.nTrials+1,2-TrialTypes,Outcomes);
