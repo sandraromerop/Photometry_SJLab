@@ -72,18 +72,10 @@ sessions = [2,2,3,4 ];
 dates = {'Jun05_2018','Jun14_2018','Jun14_2018','Jun14_2018','Jun14_2018'};
 protocol = 'CuedReward';
 
-% not: 1 6 7 10 13  17 18
-for ss = 1%:length(sessions)
-    dir = [generalDir subjects{ss} '\' protocol '\' 'Session Data' '\'];
-generalDir = 'C:\Users\Sandra Romero Pinto\Documents\Photometry_SJLab\Data\';
-subjects = {'mar024' };
-sessions = [2];
-dates = {'Jun04_2018'};
-protocol = 'CuedReward';
-
+DirAnalysis
 % not: 1 6 7 10 13  17 18
 for ss =  1:length(sessions);
-    dir = [generalDir subjects{ss} '\' ];
+    dir = [generalDir subjects{ss} '\' protocol '\Session Data' ];
     DefaultParam.PathName = dir;
     DefaultParam.FileList = [subjects{ss} '_' protocol '_' dates{ss} '_Session' num2str(sessions(ss)) '.mat'];
     if iscell(DefaultParam.FileList)==0
