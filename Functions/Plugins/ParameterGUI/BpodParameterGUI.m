@@ -65,11 +65,11 @@ switch Op
             
         Params = Params.GUI;
         PanelNames = PanelNames(end:-1:1);
-        GUIHeight = 850;
+        GUIHeight = 650.*.7;
         MaxVPos = 0;
         MaxHPos = 0;
         ParamNum = 1;
-        BpodSystem.ProtocolFigures.ParameterGUI = figure('Position', [50 50 450 GUIHeight],'name','Parameter GUI','numbertitle','off', 'MenuBar', 'none', 'Resize', 'on');
+        BpodSystem.ProtocolFigures.ParameterGUI = figure('Position', [40 10 450 GUIHeight],'name','Parameter GUI','numbertitle','off', 'MenuBar', 'none', 'Resize', 'on');
         BpodSystem.GUIHandles.ParameterGUI.Tabs.TabGroup = uitabgroup(BpodSystem.ProtocolFigures.ParameterGUI);
         [~, SettingsFile] = fileparts(BpodSystem.SettingsPath);
         SettingsMenu = uimenu(BpodSystem.ProtocolFigures.ParameterGUI,'Label',['Settings: ',SettingsFile,'.']);
@@ -90,7 +90,7 @@ switch Op
                 ThisPanelParamNames = Panels.(ThisTabPanelNames{p});
                 ThisPanelParamNames = ThisPanelParamNames(end:-1:1);
                 nParams = length(ThisPanelParamNames);
-                ThisPanelHeight = (45*nParams)+25;
+                ThisPanelHeight = (45*nParams)+5;
                 BpodSystem.GUIHandles.ParameterGUI.Panels.(ThisTabPanelNames{p}) = uipanel(htab,'title', ThisTabPanelNames{p},'FontSize',12, 'FontWeight', 'Bold', 'BackgroundColor','white','Units','Pixels', 'Position',[HPos VPos 430 ThisPanelHeight]);
                 InPanelPos = 10;
                 for i = 1:nParams
@@ -160,7 +160,7 @@ switch Op
                             end
 %                             tableData(:,2) = tableData(:,2)/sum(tableData(:,2));
                             htable = uitable(htab,'data',tableData,'columnname',columnLabel,...
-                                'ColumnEditable',true(1,numel(columnLabel)), 'FontSize', 10);
+                                'ColumnEditable',true(1,numel(columnLabel)), 'FontSize', 12);
                             htable.Position([3 4]) = htable.Extent([3 4]);
                             htable.Position([1 2]) = [HPos+220 VPos+InPanelPos+2];
                             BpodSystem.GUIHandles.ParameterGUI.Params{ParamNum} = htable;
@@ -170,7 +170,7 @@ switch Op
                         otherwise
                             error('Invalid parameter style specified. Valid parameters are: ''edit'', ''text'', ''checkbox'', ''popupmenu'', ''togglebutton'', ''pushbutton''');
                     end
-                    InPanelPos = InPanelPos + 40;
+                    InPanelPos = InPanelPos + 35;
                     ParamNum = ParamNum + 1;
                 end
                 % Check next panel to see if it will fit, otherwise start new column
@@ -182,7 +182,7 @@ switch Op
                         Wrap = 1;
                     end
                 end
-                VPos = VPos + ThisPanelHeight + 30;
+                VPos = VPos + ThisPanelHeight + 10;
                 if Wrap
                     HPos = HPos + 450;
                     if VPos > MaxVPos
@@ -197,7 +197,7 @@ switch Op
                 if HPos > MaxHPos
                     MaxHPos = HPos;
                 end
-                set(BpodSystem.ProtocolFigures.ParameterGUI, 'Position', [50 50 MaxHPos+450 MaxVPos+45]);
+                set(BpodSystem.ProtocolFigures.ParameterGUI, 'Position', [50 50 MaxHPos+350 MaxVPos+35]);
             end            
         end        
     case 'sync'

@@ -21,7 +21,5 @@ function SaveBpodSessionData
 global BpodSystem S
 SessionData = BpodSystem.Data;
 save(BpodSystem.DataPath, 'SessionData', '-v6');
-TrialSettings  = BpodSystem.Data.TrialSettings.GUI;
-save([ BpodSystem.BpodPath '\TrialSettings_' S.GUIMeta.Phase.String '.mat' ], 'TrialSettings', '-v6');
 
 

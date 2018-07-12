@@ -11,15 +11,15 @@ function BpodPath(Name)
 try
 switch Name
     case 'Fred'
-        Path = 'C:\Users\SJLab\Desktop\Bpod_Sandra_room\Protocols';
+        Path = 'C:\Users\SJLab\Documents\Photometry_SJLab\Protocols';
 %         Path='C:\Users\SJLab\Documents\Photometry_code\Protocols and Functions';
     case 'ini'
-        Path = 'C:\Users\SJLab\Desktop\Bpod_Sandra_room\Protocols';
+        Path = 'C:\Users\SJLab\Documents\Photometry_SJLab\Protocols';
 %         Path='C:\Users\SJLab\Documents\Photometry_code\Protocols and Functions';
 end
 
 %% Overwritting the txt file
-cd( 'C:\Users\SJLab\Desktop\Bpod_Sandra_room');
+cd( 'C:\Users\SJLab\Documents\Photometry_SJLab\');
 BpodUserPathTXT=fopen('BpodUserPath.txt','w');
 fprintf(BpodUserPathTXT,'%c',Path);
 fclose(BpodUserPathTXT);
