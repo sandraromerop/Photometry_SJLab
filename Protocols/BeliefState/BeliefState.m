@@ -220,7 +220,8 @@ if ~isempty(fieldnames(RawEvents))                                          % If
     BpodSystem.Data = AddTrialEvents(BpodSystem.Data,RawEvents);            % Computes trial events from raw data
     BpodSystem.Data.TrialSettings(currentTrial) = S;                        % Adds the settings used for the current trial to the Data struct (to be saved after the trial ends)
     BpodSystem.Data.TrialTypes(currentTrial) = TrialSequence(currentTrial); % Adds the trial type of the current trial to data
-    SaveBpodSessionData;                                                    % Saves the field BpodSystem.Data to the current data file
+    SaveBpodSessionData;    
+    saveTrialSettings(S.GUIMeta.Phase.String);
 end
 
 %% PLOT - extract events from BpodSystem.data and update figures

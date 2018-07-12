@@ -15,19 +15,20 @@ global S %BpodSystem
     S.Names.StateToZero={'PostReward','SoundDelivery'};
     S.Names.OutcomePlot={'Collect','GoNoGo'};
     
-    answer = questdlg('Load latest trial settings?', ...
-            'loadTrialSettings','yes','no','no');
-    if ~isempty(strfind(answer,'yes'))   
-        if exist([ S.BpodPath '\TrialSettings_' phaseName '.mat' ],'file')==2
-            load([ S.BpodPath '\TrialSettings_' phaseName '.mat' ])
-        else
-            load([ S.BpodPath '\TrialSettings_' phaseName  '_Default'  '.mat' ])
-            disp('Non existent file of last session for this phase')
-        end
-        else
-            load([ S.BpodPath '\TrialSettings_' phaseName  '_Default'  '.mat' ])
-    end
-
+%     answer = questdlg('Load latest trial settings?', ...
+%             'loadTrialSettings','yes','no','no');
+%     if ~isempty(strfind(answer,'yes'))   
+%         if exist([ S.BpodPath '\TrialSettings_' phaseName '.mat' ],'file')==2
+%             load([ S.BpodPath '\TrialSettings_' phaseName '.mat' ])
+%         else
+%             load([ S.BpodPath '\TrialSettings_' phaseName  '_Default'  '.mat' ])
+%             disp('Non existent file of last session for this phase')
+%         end
+%         else
+%             load([ S.BpodPath '\TrialSettings_' phaseName  '_Default'  '.mat' ])
+%     end
+     
+    TrialSettings = loadPreviousSettings(phaseName);
         
     switch phaseName
         case 'BeliefState'
