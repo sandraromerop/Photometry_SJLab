@@ -78,10 +78,10 @@ global S %BpodSystem
   
     S.GUI.PreCue=TrialSettings.PreCue;
     
-    S.GUI.Delay.DelayA = TrialSettings.DelayA;
-    S.GUI.Delay.DelayB = TrialSettings.DelayB;
-    S.GUI.Delay.DelayC = TrialSettings.DelayC;
-    S.GUI.Delay.DelayD = TrialSettings.DelayD;
+    S.GUI.Delay.DelayA = TrialSettings.Delay.DelayA;
+    S.GUI.Delay.DelayB = TrialSettings.Delay.DelayB;
+    S.GUI.Delay.DelayC = TrialSettings.Delay.DelayC;
+    S.GUI.Delay.DelayD = TrialSettings.Delay.DelayD;
     S.GUIMeta.Delay.Style ='table';
     
     S.GUI.DelayDistributionEnd.A = 0;
@@ -125,32 +125,32 @@ global S %BpodSystem
     switch S.GUIMeta.Phase.String      
         case 'BeliefState'
         
-        S.GUI.ProbA.A =   TrialSettings.ProbA;
-        S.GUI.ProbA.AOmission =   TrialSettings.ProbAOmission;
-        S.GUI.ProbA.AOptoCue =   TrialSettings.ProbAOptoCue;
-        S.GUI.ProbA.AOptoOutcome =   TrialSettings.ProbAOptoOutcome;
+        S.GUI.ProbA.A =   TrialSettings.ProbA.A;
+        S.GUI.ProbA.AOmission =   TrialSettings.ProbA.AOmission;
+        S.GUI.ProbA.AOptoCue =   TrialSettings.ProbA.AOptoCue;
+        S.GUI.ProbA.AOptoOutcome =   TrialSettings.ProbA.AOptoOutcome;
         S.GUIMeta.ProbA.Style ='table';
         
-        S.GUI.ProbB.B =   TrialSettings.ProbB;
-        S.GUI.ProbB.BOmission =   TrialSettings.ProbBOmission;
-        S.GUI.ProbB.BOptoCue =   TrialSettings.ProbBOptoCue;
-        S.GUI.ProbB.BOptoOutcome =   TrialSettings.ProbBOptoOutcome;
+        S.GUI.ProbB.B =   TrialSettings.ProbB.B;
+        S.GUI.ProbB.BOmission =   TrialSettings.ProbB.BOmission ;
+        S.GUI.ProbB.BOptoCue =   TrialSettings.ProbB.BOptoCue;
+        S.GUI.ProbB.BOptoOutcome =   TrialSettings.ProbB.BOptoOutcome ;
         S.GUIMeta.ProbB.Style ='table';
         
-        S.GUI.ProbC.C =   TrialSettings.ProbC;
-        S.GUI.ProbC.COmission =   TrialSettings.ProbCOmission;    
-        S.GUI.ProbC.COptoCue =   TrialSettings.ProbCOptoCue;
-        S.GUI.ProbC.COptoOutcome =   TrialSettings.ProbCOptoOutcome;
+        S.GUI.ProbC.C =   TrialSettings.ProbC.C;
+        S.GUI.ProbC.COmission =   TrialSettings.ProbC.COmission;    
+        S.GUI.ProbC.COptoCue =   TrialSettings.ProbC.COptoCue;
+        S.GUI.ProbC.COptoOutcome =   TrialSettings.ProbC.COptoOutcome;
         S.GUIMeta.ProbC.Style ='table';
         
-        S.GUI.ProbD.D =   TrialSettings.ProbD;
-        S.GUI.ProbD.DOmission =   TrialSettings.ProbDOmission;    
-        S.GUI.ProbD.DOptoCue =   TrialSettings.ProbDOptoCue;
-        S.GUI.ProbD.DOptoOutcome =   TrialSettings.ProbDOptoOutcome;
+        S.GUI.ProbD.D =   TrialSettings.ProbD.D ;
+        S.GUI.ProbD.DOmission =   TrialSettings.ProbD.DOmission;    
+        S.GUI.ProbD.DOptoCue =   TrialSettings.ProbD.DOptoCue ;
+        S.GUI.ProbD.DOptoOutcome =   TrialSettings.ProbD.DOptoOutcome;
         S.GUIMeta.ProbD.Style ='table';
         
-        S.GUI.ProbUncued.UncuedRwd =   TrialSettings.ProbUncuedRwd;
-        S.GUI.ProbUncued.UncuedOmission =   TrialSettings.ProbUncuedOmission;
+        S.GUI.ProbUncued.UncuedRwd =   TrialSettings.ProbUncued.UncuedRwd;
+        S.GUI.ProbUncued.UncuedOmission =   TrialSettings.ProbUncued.UncuedOmission;
         S.GUIMeta.ProbUncued.Style ='table';
         
         S.GUIPanels.Probabilities={'ProbA', 'ProbB',...
@@ -163,28 +163,28 @@ global S %BpodSystem
         S.GUIMeta.TrialsOrder.Style='popupmenu';
         S.GUIMeta.TrialsOrder.String={'randomize','block'}; 
 
-        S.GUI.OrderA.A =   TrialSettings.OrderA;
-        S.GUI.OrderA.AOmission =   TrialSettings.OrderAOmission;
-        S.GUI.OrderA.AOptoCue =   TrialSettings.OrderAOptoCue;
-        S.GUI.OrderA.AOptoOutcome =   TrialSettings.OrderAOptoOutcome;
+        S.GUI.OrderA.A =   TrialSettings.OrderA.A ;
+        S.GUI.OrderA.AOmission =   TrialSettings.OrderA.AOmission;
+        S.GUI.OrderA.AOptoCue =   TrialSettings.OrderA.AOptoCue;
+        S.GUI.OrderA.AOptoOutcome =   TrialSettings.OrderA.AOptoOutcome ;
         S.GUIMeta.OrderA.Style ='table';
-        S.GUI.OrderB.B =   TrialSettings.OrderB;
-        S.GUI.OrderB.BOmission =   TrialSettings.OrderBOmission;
-        S.GUI.OrderB.BOptoCue =   TrialSettings.OrderBOptoCue;
-        S.GUI.OrderB.BOptoOutcome =   TrialSettings.OrderBOptoOutcome;
+        S.GUI.OrderB.B =   TrialSettings.OrderB.B;
+        S.GUI.OrderB.BOmission =   TrialSettings.OrderB.BOmission;
+        S.GUI.OrderB.BOptoCue =   TrialSettings.OrderB.BOptoCue;
+        S.GUI.OrderB.BOptoOutcome =   TrialSettings.OrderB.BOptoOutcome;
         S.GUIMeta.OrderB.Style ='table';
-        S.GUI.OrderC.C =   TrialSettings.OrderC;
-        S.GUI.OrderC.COmission =   TrialSettings.OrderCOmission;
-        S.GUI.OrderC.COptoCue =   TrialSettings.OrderCOptoCue;
-        S.GUI.OrderC.COptoOutcome =   TrialSettings.OrderCOptoOutcome;
+        S.GUI.OrderC.C =   TrialSettings.OrderC.C;
+        S.GUI.OrderC.COmission =   TrialSettings.OrderC.COmission;
+        S.GUI.OrderC.COptoCue =   TrialSettings.OrderC.COptoCue ;
+        S.GUI.OrderC.COptoOutcome =   TrialSettings.OrderC.COptoOutcome;
         S.GUIMeta.OrderC.Style ='table';
-        S.GUI.OrderD.D =   TrialSettings.OrderD;
-        S.GUI.OrderD.DOmission =   TrialSettings.OrderDOmission;
-        S.GUI.OrderD.DOptoCue =   TrialSettings.OrderDOptoCue;
-        S.GUI.OrderD.DOptoOutcome =   TrialSettings.OrderDOptoOutcome;
+        S.GUI.OrderD.D =   TrialSettings.OrderD.D ;
+        S.GUI.OrderD.DOmission =   TrialSettings.OrderD.DOmission ;
+        S.GUI.OrderD.DOptoCue =   TrialSettings.OrderD.DOptoCue;
+        S.GUI.OrderD.DOptoOutcome =   TrialSettings.OrderD.DOptoOutcome;
         S.GUIMeta.OrderD.Style ='table';
-        S.GUI.OrderUncued.UncuedRwd =   TrialSettings.OrderUncuedRwd;
-        S.GUI.OrderUncued.UncuedOmission =   TrialSettings.OrderUncuedOmission;
+        S.GUI.OrderUncued.UncuedRwd =   TrialSettings.OrderUncued.UncuedRwd;
+        S.GUI.OrderUncued.UncuedOmission =   TrialSettings.OrderUncued.UncuedOmission;
         S.GUIMeta.OrderUncued.Style ='table';
         
                  
