@@ -29,7 +29,7 @@ try
     curLickEvents=LickEventsRaw-TimeForZero;
 end
 %% Outcome : green if the animal has collected the reward / showed anticipatory licks
-if sum(curLickEvents>-1 & curLickEvents<2)>1
+if sum(curLickEvents>-1 & curLickEvents<2)>4
     outcome(1)='g';
     if nargout>2
         varargout{1} = 1;
