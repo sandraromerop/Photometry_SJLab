@@ -14,7 +14,7 @@ DefaultParam.Illustrator=0;
 DefaultParam.Transparency=1;
 % Axis
 DefaultParam.PlotYNidaq=[-2 5];
-DefaultParam.PlotYNidaq=[]%;[-1 5];
+DefaultParam.PlotYNidaq=[]; %;[-1 5];
 DefaultParam.PlotX=[-4 4];
 % States
 
