@@ -218,3 +218,5 @@ saveas(gcf,[Analysis.Properties.DirFig '\' Analysis.Properties.Name '_' Analysis
 saveas(gcf,[Analysis.Properties.DirFig '\' Analysis.Properties.Name '_' Analysis.Properties.StateToZero{stateNb} '_' 'summary_all' '.m']);
 end
 end
+>>>>>>> 9216c3fa548d9fd3c5bc671904761c959f3a562b
+ 

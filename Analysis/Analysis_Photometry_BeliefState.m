@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 function Analysis = Analysis_Photometry_BeliefState(DefaultParam)
 %% Loads File, Extracts and Organizes all the data
 DirName=fullfile(DefaultParam.PathName, DefaultParam.FileToOpen );
@@ -86,4 +85,3 @@ catch
     Analysis=[];
 
 end
->>>>>>> 9216c3fa548d9fd3c5bc671904761c959f3a562b

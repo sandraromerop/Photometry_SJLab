@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 function AP_PlotSummary_VariableState_Barplot(Analysis,timings )
 
 for stateNb=1:size(Analysis.AllData.Photo_470.DFF,1)
@@ -218,5 +217,4 @@ subplot(2,round(length(varType)),ip);ip=ip+1;
 ax=gca;ax.YLim=[min(ymin{2}) max(ymax{2}) ];
 end
 end
->>>>>>> 9216c3fa548d9fd3c5bc671904761c959f3a562b
  

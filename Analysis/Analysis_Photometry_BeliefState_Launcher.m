@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 generalDir = 'C:\Users\Lars\Documents\Data\Photometry\mar025\';
 behavior = 'BeliefState';
 listing = dir(generalDir);cc=1;
@@ -132,4 +131,3 @@ end
 end
 
 
->>>>>>> 9216c3fa548d9fd3c5bc671904761c959f3a562b
