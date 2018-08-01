@@ -1,4 +1,4 @@
-generalDir = 'E:\PhotometryData\mar025\';
+generalDir = input('Please enter the path of the behaviour files','s');
 behavior = 'BeliefState';
 listing = dir(generalDir);cc=1;
 sessionNames=[];ii=3;
@@ -10,10 +10,15 @@ for ii=1:length(listing)
         end
 end
 for ii=1:length(sessionNames)
-DefaultParam.FileToOpen  = sessionNames{ii}; %'SR001_BeliefState_Jul15_2018_Session3.mat';
-DefaultParam.PathName =  'E:\PhotometryData\mar025\';
-
-DefaultParam.Name = 'mar025';
+DefaultParam.FileToOpen  = sessionNames{ii}; 
+DefaultParam.PathName = generalDir;
+if ismac
+    deconstructedPath = strsplit(generalDir,'/'); 
+elseif ispc || isunix
+    deconstructedPath = strsplit(generalDir,'\'); 
+end
+    
+DefaultParam.Name = deconstructedPath{end-2};
 DefaultParam.Analysis_type='Single';
 DefaultParam.Behavior = 'BeliefState';
 DefaultParam.Phase = 'BeliefState';
