@@ -1,4 +1,4 @@
-function AP_PlotSummary_AllSignals(Analysis,DefaultParam,idTrials)
+function AP_PlotSummary_AllSignals_old(Analysis,DefaultParam,idTrials)
 
 figure('units','normalized','position',[.1 .1 .7 .7])
 pearsonR_velocity=[];
