@@ -18,7 +18,7 @@ elseif ispc || isunix
     deconstructedPath = strsplit(generalDir,'\'); 
 end
     
-DefaultParam.Name = deconstructedPath{end-2};
+DefaultParam.Name = deconstructedPath{end-3};
 DefaultParam.Analysis_type='Single';
 DefaultParam.Behavior = 'BeliefState';
 DefaultParam.Phase = 'BeliefState';
