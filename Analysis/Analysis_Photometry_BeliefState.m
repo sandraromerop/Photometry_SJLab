@@ -20,7 +20,13 @@ end
     sortedAnalysis = Analysis; %preallocation bullshit
     Analysis = A_FilterTrialType(Analysis);
     [Analysis sortedAnalysis ] = AP_DataSort(Analysis, sortedAnalysis);
-    Analysis = allignTraces(Analysis); %first thing to fail without photometry
+    
+    if isfield(Analysis.AllData, 'Photo_470') == 1
+        Analysis = allignTraces(Analysis);
+    else
+        Analysis = allignTraces_noPhotometry(Analysis); 
+        disp('No photometry data found')
+    end
     
     % Makes folder for figures BUT NO FIGURES SAVED
     delimiter = filesep;
