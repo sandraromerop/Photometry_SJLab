@@ -58,10 +58,6 @@ Analysis = Analysis_Photometry_BeliefState(DefaultParam);
 % Figures
 if ~isempty(Analysis)
     timings ={.75,-.75,1,.75}; %{ After cue, before reward, post reawrd, baseline from trial start} WHY IS THIS HARD CODED!?!?
-    AP_PlotSummary_AllSignals(Analysis,DefaultParam) % fails without photometry
-    AP_PlotSummary_VariableState(Analysis,DefaultParam) % fails without photometry
-    AP_PlotSummary_VariableState_Barplot(Analysis,timings ) %fails without photometry
-    
     if isfield(Analysis.AllData, 'Photo_470') == 1
         AP_PlotSummary_AllSignals(Analysis,DefaultParam) % fails without photometry
         AP_PlotSummary_VariableState(Analysis,DefaultParam) % fails without photometry
