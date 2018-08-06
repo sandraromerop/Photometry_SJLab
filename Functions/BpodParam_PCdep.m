@@ -1,7 +1,7 @@
 function Param=BpodParam_PCdep()
 
 switch getenv('computername')
-    case 'W285A'
+    case 'LARS-HP'
         Param.rig='Photometry1';
         Param.nidaqDev='Dev1';
         Param.LED1Amp=0.5;

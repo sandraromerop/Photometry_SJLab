@@ -14,7 +14,7 @@ DefaultParam.Illustrator=0;
 DefaultParam.Transparency=1;
 % Axis
 DefaultParam.PlotYNidaq=[-2 5];
-DefaultParam.PlotYNidaq=[]%;[-1 5];
+DefaultParam.PlotYNidaq=[]; %;[-1 5];
 DefaultParam.PlotX=[-4 4];
 % States
 
@@ -74,7 +74,7 @@ protocol = 'CuedReward';
 
 DirAnalysis
 % not: 1 6 7 10 13  17 18
-for ss =  1:length(sessions);
+for ss =  1:length(sessions)
     dir = [generalDir subjects{ss} '\' protocol '\Session Data' ];
     DefaultParam.PathName = dir;
     DefaultParam.FileList = [subjects{ss} '_' protocol '_' dates{ss} '_Session' num2str(sessions(ss)) '.mat'];

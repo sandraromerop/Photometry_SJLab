@@ -24,88 +24,191 @@ end
     
 %% Extract Data
 for i=1:Analysis.Properties.nbOfTrialTypes
+    
+    
+    if ~iscell(Analysis.Properties.StateToZero)
     try
-    thistype=sprintf('type_%.0d',i);
-    thisFilter=logical(Analysis.Filters.Logicals(:,i+newIndex));
-% Parameters
-    sortedAnalysis.(thistype).Name                        =Analysis.Properties.TrialNames{1,i};
-    sortedAnalysis.(thistype).nTrials                     =nnz(thisFilter);
-    sortedAnalysis.(thistype).IgnoredTrials               =Analysis.AllData.nTrials-sortedAnalysis.(thistype).nTrials;
-    sortedAnalysis.(thistype).TrialNumbers                =Analysis.AllData.TrialNumbers(thisFilter);
+        thistype=sprintf('type_%.0d',i);
+        thisFilter=logical(Analysis.Filters.Logicals(:,i+newIndex));
+        % Parameters
+        sortedAnalysis.(thistype).Name                        =Analysis.Properties.TrialNames{1,i};
+        sortedAnalysis.(thistype).nTrials                     =nnz(thisFilter);
+        sortedAnalysis.(thistype).IgnoredTrials               =Analysis.AllData.nTrials-sortedAnalysis.(thistype).nTrials;
+        sortedAnalysis.(thistype).TrialNumbers                =Analysis.AllData.TrialNumbers(thisFilter);
 % Timing
-    sortedAnalysis.(thistype).CueTime=Analysis.AllData.CueTime(thisFilter,:);
-    sortedAnalysis.(thistype).CueTime=sortedAnalysis.(thistype).CueTime(1,:);
-    sortedAnalysis.(thistype).OutcomeTime=Analysis.AllData.OutcomeTime(thisFilter,:);
-    sortedAnalysis.(thistype).OutcomeTime=sortedAnalysis.(thistype).OutcomeTime(1,:);   
-    
-    CueTime=sortedAnalysis.(thistype).CueTime+Analysis.Properties.CueTimeReset;
-    OutcomeTime=sortedAnalysis.(thistype).OutcomeTime+Analysis.Properties.OutcomeTimeReset;
-%% Licks    
-    thisEvents                                      =Analysis.AllData.Licks.Events;
-    thisEvents(thisFilter~=1) = '';
-    sortedAnalysis.(thistype).Licks.Events                =cell2mat(thisEvents);
-    thisTrials=cell(size(thisEvents));
-    for j=1:length(thisTrials)
-        thisTrials{1,j}=j*ones(length(thisEvents{1,j}),1)';
-    end
-    sortedAnalysis.(thistype).Licks.Trials                =cell2mat(thisTrials);
-    sortedAnalysis.(thistype).Licks.Bin                   =Analysis.AllData.Licks.Bin{thisFilter};
-    sortedAnalysis.(thistype).Licks.Rate                  =Analysis.AllData.Licks.Rate(thisFilter,:);
-	sortedAnalysis.(thistype).Licks.Cue                   =Analysis.AllData.Licks.Cue(thisFilter);
-    sortedAnalysis.(thistype).Licks.Outcome               =Analysis.AllData.Licks.Outcome(thisFilter);
-    % Average
-    sortedAnalysis.(thistype).Licks.AVG                   =mean(sortedAnalysis.(thistype).Licks.Rate,1);
-    sortedAnalysis.(thistype).Licks.SEM                   =std(sortedAnalysis.(thistype).Licks.Rate,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
-    sortedAnalysis.(thistype).Licks.Bin                   =Analysis.Properties.LickEdges(1)+Analysis.Properties.Bin:Analysis.Properties.Bin:Analysis.Properties.LickEdges(2);
-    sortedAnalysis.(thistype).Licks.CueAVG                =mean(sortedAnalysis.(thistype).Licks.Cue);
-    sortedAnalysis.(thistype).Licks.OutcomeAVG            =mean(sortedAnalysis.(thistype).Licks.Outcome);
-    
-%% Photometry    
-    for thisCh=1:length(Analysis.Properties.PhotoCh)
-        thisChStruct=sprintf('Photo_%s',char(Analysis.Properties.PhotoCh{thisCh}));
-        sortedAnalysis.(thistype).(thisChStruct).Time     =Analysis.AllData.(thisChStruct).Time(thisFilter,:);
-        sortedAnalysis.(thistype).(thisChStruct).DFF     	=Analysis.AllData.(thisChStruct).DFF(thisFilter,:);
-        sortedAnalysis.(thistype).(thisChStruct).Cue  	=Analysis.AllData.(thisChStruct).Cue(thisFilter);
-        sortedAnalysis.(thistype).(thisChStruct).Outcome 	=Analysis.AllData.(thisChStruct).Outcome(thisFilter);
-        sortedAnalysis.(thistype).(thisChStruct).OutcomeZ =Analysis.AllData.(thisChStruct).OutcomeZ(thisFilter);
-    % Average
-        sortedAnalysis.(thistype).(thisChStruct).DFFAVG       =nanmean(sortedAnalysis.(thistype).(thisChStruct).DFF,1); 
-        sortedAnalysis.(thistype).(thisChStruct).DFFSEM       =nanstd(sortedAnalysis.(thistype).(thisChStruct).DFF,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
-        sortedAnalysis.(thistype).(thisChStruct).CueAVG       =nanmean(sortedAnalysis.(thistype).(thisChStruct).Cue,2);
-        sortedAnalysis.(thistype).(thisChStruct).CueSEM       =nanstd(sortedAnalysis.(thistype).(thisChStruct).Cue,0,2)/sqrt(sortedAnalysis.(thistype).nTrials);
-        sortedAnalysis.(thistype).(thisChStruct).CueMax       =max(sortedAnalysis.(thistype).(thisChStruct).DFFAVG(sortedAnalysis.(thistype).(thisChStruct).Time(1,:)>CueTime(1) & sortedAnalysis.(thistype).(thisChStruct).Time(1,:)<CueTime(2)));
-        sortedAnalysis.(thistype).(thisChStruct).OutcomeAVG   =nanmean(sortedAnalysis.(thistype).(thisChStruct).Outcome,2);
-        sortedAnalysis.(thistype).(thisChStruct).OutcomeSEM   =nanstd(sortedAnalysis.(thistype).(thisChStruct).Outcome,0,2)/sqrt(sortedAnalysis.(thistype).nTrials);
-        sortedAnalysis.(thistype).(thisChStruct).OutcomeZAVG  =nanmean(sortedAnalysis.(thistype).(thisChStruct).OutcomeZ,2);
-        sortedAnalysis.(thistype).(thisChStruct).OutcomeZSEM  =nanstd(sortedAnalysis.(thistype).(thisChStruct).OutcomeZ,0,2)/sqrt(sortedAnalysis.(thistype).nTrials);
-        sortedAnalysis.(thistype).(thisChStruct).OutcomeMax   =max(sortedAnalysis.(thistype).(thisChStruct).DFFAVG(sortedAnalysis.(thistype).(thisChStruct).Time(1,:)>OutcomeTime(1) & sortedAnalysis.(thistype).(thisChStruct).Time(1,:)<OutcomeTime(2))); 
-    end
-%% Wheel
-    if Analysis.Properties.Wheel==1
-        sortedAnalysis.(thistype).Wheel.Time              =Analysis.AllData.Wheel.Time(thisFilter,:);
-        sortedAnalysis.(thistype).Wheel.Deg               =Analysis.AllData.Wheel.Deg(thisFilter,:);
-        sortedAnalysis.(thistype).Wheel.Distance          =Analysis.AllData.Wheel.Distance(thisFilter,:);
-        sortedAnalysis.(thistype).Wheel.Baseline          =Analysis.AllData.Wheel.Baseline(thisFilter);
-        sortedAnalysis.(thistype).Wheel.Cue               =Analysis.AllData.Wheel.Cue(thisFilter);
-        sortedAnalysis.(thistype).Wheel.Outcome           =Analysis.AllData.Wheel.Outcome(thisFilter);
+        sortedAnalysis.(thistype).CueTime=Analysis.AllData.CueTime(thisFilter,:);
+        sortedAnalysis.(thistype).CueTime=sortedAnalysis.(thistype).CueTime(1,:);
+        sortedAnalysis.(thistype).OutcomeTime=Analysis.AllData.OutcomeTime(thisFilter,:);
+        sortedAnalysis.(thistype).OutcomeTime=sortedAnalysis.(thistype).OutcomeTime(1,:);   
+
+        CueTime=sortedAnalysis.(thistype).CueTime+Analysis.Properties.CueTimeReset;
+        OutcomeTime=sortedAnalysis.(thistype).OutcomeTime+Analysis.Properties.OutcomeTimeReset;
+    %% Licks    
+        thisEvents                                      =Analysis.AllData.Licks.Events;
+        thisEvents(thisFilter~=1) = '';
+        sortedAnalysis.(thistype).Licks.Events                =cell2mat(thisEvents);
+        thisTrials=cell(size(thisEvents));
+        for j=1:length(thisTrials)
+            thisTrials{1,j}=j*ones(length(thisEvents{1,j}),1)';
+        end
+        sortedAnalysis.(thistype).Licks.Trials                =cell2mat(thisTrials);
+        sortedAnalysis.(thistype).Licks.Bin                   =Analysis.AllData.Licks.Bin{thisFilter};
+        sortedAnalysis.(thistype).Licks.Rate                  =Analysis.AllData.Licks.Rate(thisFilter,:);
+        sortedAnalysis.(thistype).Licks.Cue                   =Analysis.AllData.Licks.Cue(thisFilter);
+        sortedAnalysis.(thistype).Licks.Outcome               =Analysis.AllData.Licks.Outcome(thisFilter);
         % Average
-        sortedAnalysis.(thistype).Wheel.DistanceAVG            =nanmean(sortedAnalysis.(thistype).Wheel.Distance,1); 
-        sortedAnalysis.(thistype).Wheel.DistanceSEM            =nanstd(sortedAnalysis.(thistype).Wheel.Distance,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
-    end
-%% Pupillometry
-    if Analysis.Properties.Pupillometry
-        sortedAnalysis.(thistype).Pupil.Time          =Analysis.AllData.Pupil.Time(thisFilter,:);
-        sortedAnalysis.(thistype).Pupil.Blink         =Analysis.AllData.Pupil.Blink(thisFilter,:);
-        sortedAnalysis.(thistype).Pupil.Pupil         =Analysis.AllData.Pupil.Pupil(thisFilter,:);
-        sortedAnalysis.(thistype).Pupil.Baseline      =Analysis.AllData.Pupil.Baseline(thisFilter);
-        sortedAnalysis.(thistype).Pupil.NormBaseline      =Analysis.AllData.Pupil.NormBaseline(thisFilter);
-        sortedAnalysis.(thistype).Pupil.PupilDPP      =Analysis.AllData.Pupil.PupilDPP(thisFilter,:);
-        sortedAnalysis.(thistype).Pupil.Cue           =Analysis.AllData.Pupil.Cue(thisFilter);
-        sortedAnalysis.(thistype).Pupil.Outcome       =Analysis.AllData.Pupil.Outcome(thisFilter);
+        sortedAnalysis.(thistype).Licks.AVG                   =mean(sortedAnalysis.(thistype).Licks.Rate,1);
+        sortedAnalysis.(thistype).Licks.SEM                   =std(sortedAnalysis.(thistype).Licks.Rate,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+        sortedAnalysis.(thistype).Licks.Bin                   =Analysis.Properties.LickEdges(1)+Analysis.Properties.Bin:Analysis.Properties.Bin:Analysis.Properties.LickEdges(2);
+        sortedAnalysis.(thistype).Licks.CueAVG                =mean(sortedAnalysis.(thistype).Licks.Cue);
+        sortedAnalysis.(thistype).Licks.OutcomeAVG            =mean(sortedAnalysis.(thistype).Licks.Outcome);
+
+    %% Photometry    
+        for thisCh=1:length(Analysis.Properties.PhotoCh)
+            thisChStruct=sprintf('Photo_%s',char(Analysis.Properties.PhotoCh{thisCh}));
+            sortedAnalysis.(thistype).(thisChStruct).Time     =Analysis.AllData.(thisChStruct).Time(thisFilter,:);
+            sortedAnalysis.(thistype).(thisChStruct).DFF     	=Analysis.AllData.(thisChStruct).DFF(thisFilter,:);
+            sortedAnalysis.(thistype).(thisChStruct).Cue  	=Analysis.AllData.(thisChStruct).Cue(thisFilter);
+            sortedAnalysis.(thistype).(thisChStruct).Outcome 	=Analysis.AllData.(thisChStruct).Outcome(thisFilter);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeZ =Analysis.AllData.(thisChStruct).OutcomeZ(thisFilter);
         % Average
-        sortedAnalysis.(thistype).Pupil.PupilAVG   	=nanmean(sortedAnalysis.(thistype).Pupil.PupilDPP,1); 
-        sortedAnalysis.(thistype).Pupil.PupilSEM      =nanstd(sortedAnalysis.(thistype).Pupil.PupilDPP,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+            sortedAnalysis.(thistype).(thisChStruct).DFFAVG       =nanmean(sortedAnalysis.(thistype).(thisChStruct).DFF,1); 
+            sortedAnalysis.(thistype).(thisChStruct).DFFSEM       =nanstd(sortedAnalysis.(thistype).(thisChStruct).DFF,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+            sortedAnalysis.(thistype).(thisChStruct).CueAVG       =nanmean(sortedAnalysis.(thistype).(thisChStruct).Cue,2);
+            sortedAnalysis.(thistype).(thisChStruct).CueSEM       =nanstd(sortedAnalysis.(thistype).(thisChStruct).Cue,0,2)/sqrt(sortedAnalysis.(thistype).nTrials);
+            sortedAnalysis.(thistype).(thisChStruct).CueMax       =max(sortedAnalysis.(thistype).(thisChStruct).DFFAVG(sortedAnalysis.(thistype).(thisChStruct).Time(1,:)>CueTime(1) & sortedAnalysis.(thistype).(thisChStruct).Time(1,:)<CueTime(2)));
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeAVG   =nanmean(sortedAnalysis.(thistype).(thisChStruct).Outcome,2);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeSEM   =nanstd(sortedAnalysis.(thistype).(thisChStruct).Outcome,0,2)/sqrt(sortedAnalysis.(thistype).nTrials);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeZAVG  =nanmean(sortedAnalysis.(thistype).(thisChStruct).OutcomeZ,2);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeZSEM  =nanstd(sortedAnalysis.(thistype).(thisChStruct).OutcomeZ,0,2)/sqrt(sortedAnalysis.(thistype).nTrials);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeMax   =max(sortedAnalysis.(thistype).(thisChStruct).DFFAVG(sortedAnalysis.(thistype).(thisChStruct).Time(1,:)>OutcomeTime(1) & sortedAnalysis.(thistype).(thisChStruct).Time(1,:)<OutcomeTime(2))); 
+        end
+    %% Wheel
+        if Analysis.Properties.Wheel==1
+            sortedAnalysis.(thistype).Wheel.Time              =Analysis.AllData.Wheel.Time(thisFilter,:);
+            sortedAnalysis.(thistype).Wheel.Deg               =Analysis.AllData.Wheel.Deg(thisFilter,:);
+            sortedAnalysis.(thistype).Wheel.Distance          =Analysis.AllData.Wheel.Distance(thisFilter,:);
+            sortedAnalysis.(thistype).Wheel.Baseline          =Analysis.AllData.Wheel.Baseline(thisFilter);
+            sortedAnalysis.(thistype).Wheel.Cue               =Analysis.AllData.Wheel.Cue(thisFilter);
+            sortedAnalysis.(thistype).Wheel.Outcome           =Analysis.AllData.Wheel.Outcome(thisFilter);
+            % Average
+            sortedAnalysis.(thistype).Wheel.DistanceAVG            =nanmean(sortedAnalysis.(thistype).Wheel.Distance,1); 
+            sortedAnalysis.(thistype).Wheel.DistanceSEM            =nanstd(sortedAnalysis.(thistype).Wheel.Distance,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+        end
+    %% Pupillometry
+        if Analysis.Properties.Pupillometry
+            sortedAnalysis.(thistype).Pupil.Time          =Analysis.AllData.Pupil.Time(thisFilter,:);
+            sortedAnalysis.(thistype).Pupil.Blink         =Analysis.AllData.Pupil.Blink(thisFilter,:);
+            sortedAnalysis.(thistype).Pupil.Pupil         =Analysis.AllData.Pupil.Pupil(thisFilter,:);
+            sortedAnalysis.(thistype).Pupil.Baseline      =Analysis.AllData.Pupil.Baseline(thisFilter);
+            sortedAnalysis.(thistype).Pupil.NormBaseline  =Analysis.AllData.Pupil.NormBaseline(thisFilter);
+            sortedAnalysis.(thistype).Pupil.PupilDPP      =Analysis.AllData.Pupil.PupilDPP(thisFilter,:);
+            sortedAnalysis.(thistype).Pupil.Cue           =Analysis.AllData.Pupil.Cue(thisFilter);
+            sortedAnalysis.(thistype).Pupil.Outcome       =Analysis.AllData.Pupil.Outcome(thisFilter);
+            % Average
+            sortedAnalysis.(thistype).Pupil.PupilAVG   	=nanmean(sortedAnalysis.(thistype).Pupil.PupilDPP,1); 
+            sortedAnalysis.(thistype).Pupil.PupilSEM      =nanstd(sortedAnalysis.(thistype).Pupil.PupilDPP,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+        end
     end
+    else
+       try 
+       % if alligned to different time points
+       for stateNb=1:length(Analysis.Properties.StateToZero)
+        
+        thistype=sprintf('type_%.0d',i);
+        thisFilter=logical(Analysis.Filters.Logicals(:,i+newIndex));
+        
+        % Parameters
+        sortedAnalysis.(thistype).Name                        =Analysis.Properties.TrialNames{1,i};
+        sortedAnalysis.(thistype).nTrials                     =nnz(thisFilter);
+        sortedAnalysis.(thistype).IgnoredTrials               =Analysis.AllData.nTrials-sortedAnalysis.(thistype).nTrials;
+        sortedAnalysis.(thistype).TrialNumbers                =Analysis.AllData.TrialNumbers(thisFilter);
+        
+        % Timing
+        sortedAnalysis.(thistype).CueTime(stateNb,:,:)=squeeze(Analysis.AllData.CueTime(stateNb,thisFilter,:));
+        %sortedAnalysis.(thistype).CueTime(stateNb,:)=sortedAnalysis.(thistype).CueTime(stateNb,:);
+        sortedAnalysis.(thistype).OutcomeTime(stateNb,:,:)=squeeze(Analysis.AllData.OutcomeTime(stateNb,thisFilter,:));
+        %sortedAnalysis.(thistype).OutcomeTime(stateNb,:)=sortedAnalysis.(thistype).OutcomeTime(1,:);   
+
+        CueTime=sortedAnalysis.(thistype).CueTime(stateNb,:,:)+Analysis.Properties.CueTimeReset(1,1,:);
+        OutcomeTime=sortedAnalysis.(thistype).OutcomeTime(stateNb,:,:)+Analysis.Properties.OutcomeTimeReset(1,1,:);
+         
+        
+        %% Licks    
+        thisEvents                                      =Analysis.AllData.Licks.Events;
+        thisEvents(thisFilter~=1) = '';
+        sortedAnalysis.(thistype).Licks.Events                =cell2mat(thisEvents);
+        thisTrials=cell(size(thisEvents));
+        for j=1:length(thisTrials)
+            thisTrials{1,j}=j*ones(length(thisEvents{1,j}),1)';
+        end
+        sortedAnalysis.(thistype).Licks.Trials                =cell2mat(thisTrials);
+        sortedAnalysis.(thistype).Licks.Bin                   =Analysis.AllData.Licks.Bin{thisFilter};
+        sortedAnalysis.(thistype).Licks.Rate(stateNb,:,:)                  =squeeze(Analysis.AllData.Licks.Rate(stateNb,thisFilter,:));
+        sortedAnalysis.(thistype).Licks.Cue(stateNb,:)                   =squeeze(Analysis.AllData.Licks.Cue(stateNb,thisFilter));
+        sortedAnalysis.(thistype).Licks.Outcome(stateNb,:)               =squeeze(Analysis.AllData.Licks.Outcome(stateNb,thisFilter));
+        
+        % Average
+        sortedAnalysis.(thistype).Licks.AVG(stateNb,:)                     =mean(squeeze(sortedAnalysis.(thistype).Licks.Rate(stateNb,:,:)) ,1);
+        sortedAnalysis.(thistype).Licks.SEM(stateNb,:)                     =std(squeeze(sortedAnalysis.(thistype).Licks.Rate(stateNb,:,:)),0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+        sortedAnalysis.(thistype).Licks.Bin                   =Analysis.Properties.LickEdges(1)+Analysis.Properties.Bin:Analysis.Properties.Bin:Analysis.Properties.LickEdges(2);
+        sortedAnalysis.(thistype).Licks.CueAVG(stateNb)                =mean(sortedAnalysis.(thistype).Licks.Cue(stateNb,:));
+        sortedAnalysis.(thistype).Licks.OutcomeAVG(stateNb)            =mean(sortedAnalysis.(thistype).Licks.Outcome(stateNb,:));
+
+        %% Photometry    
+        for thisCh=1:length(Analysis.Properties.PhotoCh)
+            thisChStruct=sprintf('Photo_%s',char(Analysis.Properties.PhotoCh{thisCh}));
+            sortedAnalysis.(thistype).(thisChStruct).Time(stateNb,:,:)     =squeeze(Analysis.AllData.(thisChStruct).Time(stateNb,thisFilter,:));
+            sortedAnalysis.(thistype).(thisChStruct).DFF(stateNb,:,:)     	=squeeze(Analysis.AllData.(thisChStruct).DFF(stateNb,thisFilter,:));
+            sortedAnalysis.(thistype).(thisChStruct).Cue(stateNb,:,:)  	=squeeze(Analysis.AllData.(thisChStruct).Cue(stateNb,thisFilter));
+            sortedAnalysis.(thistype).(thisChStruct).Outcome(stateNb,:,:) 	=Analysis.AllData.(thisChStruct).Outcome(stateNb,thisFilter);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeZ(stateNb,:,:) =Analysis.AllData.(thisChStruct).OutcomeZ(stateNb,thisFilter);
+        
+        % Average
+            sortedAnalysis.(thistype).(thisChStruct).DFFAVG(stateNb,:)        =nanmean(squeeze(sortedAnalysis.(thistype).(thisChStruct).DFF(stateNb,:,:)),1); 
+            sortedAnalysis.(thistype).(thisChStruct).DFFSEM(stateNb,:)       =nanstd(squeeze(sortedAnalysis.(thistype).(thisChStruct).DFF(stateNb,:,:)),0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+            sortedAnalysis.(thistype).(thisChStruct).CueAVG(stateNb)       =nanmean(sortedAnalysis.(thistype).(thisChStruct).Cue(stateNb,:),2);
+            sortedAnalysis.(thistype).(thisChStruct).CueSEM(stateNb)       =nanstd(sortedAnalysis.(thistype).(thisChStruct).Cue(stateNb,:),0,2)/sqrt(sortedAnalysis.(thistype).nTrials);
+            sortedAnalysis.(thistype).(thisChStruct).CueMax(stateNb)       =max(sortedAnalysis.(thistype).(thisChStruct).DFFAVG(stateNb,sortedAnalysis.(thistype).(thisChStruct).Time(stateNb,1,:)>CueTime(1,1,1)...
+                & sortedAnalysis.(thistype).(thisChStruct).Time(stateNb,1,:)<CueTime(1,1,2)));
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeAVG(stateNb)   =nanmean(squeeze(sortedAnalysis.(thistype).(thisChStruct).Outcome(stateNb,:,:)),1);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeSEM(stateNb)   =nanstd(squeeze(sortedAnalysis.(thistype).(thisChStruct).Outcome(stateNb,:,:)),0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeZAVG(stateNb)  =nanmean(squeeze(sortedAnalysis.(thistype).(thisChStruct).OutcomeZ(stateNb,:,:)),1);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeZSEM(stateNb)  =nanstd(squeeze(sortedAnalysis.(thistype).(thisChStruct).OutcomeZ(stateNb,:,:)),0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+            sortedAnalysis.(thistype).(thisChStruct).OutcomeMax(stateNb)   =max(sortedAnalysis.(thistype).(thisChStruct).DFFAVG(stateNb,...
+                sortedAnalysis.(thistype).(thisChStruct).Time(stateNb,1,:)>OutcomeTime(1,1,1) & sortedAnalysis.(thistype).(thisChStruct).Time(stateNb,1,:)<OutcomeTime(1,1,2))); 
+        end
+        
+        %% Wheel
+%         if Analysis.Properties.Wheel==1
+%             sortedAnalysis.(thistype).Wheel.Time              =Analysis.AllData.Wheel.Time(thisFilter,:);
+%             sortedAnalysis.(thistype).Wheel.Deg               =Analysis.AllData.Wheel.Deg(thisFilter,:);
+%             sortedAnalysis.(thistype).Wheel.Distance          =Analysis.AllData.Wheel.Distance(thisFilter,:);
+%             sortedAnalysis.(thistype).Wheel.Baseline          =Analysis.AllData.Wheel.Baseline(thisFilter);
+%             sortedAnalysis.(thistype).Wheel.Cue               =Analysis.AllData.Wheel.Cue(thisFilter);
+%             sortedAnalysis.(thistype).Wheel.Outcome           =Analysis.AllData.Wheel.Outcome(thisFilter);
+%             % Average
+%             sortedAnalysis.(thistype).Wheel.DistanceAVG            =nanmean(sortedAnalysis.(thistype).Wheel.Distance,1); 
+%             sortedAnalysis.(thistype).Wheel.DistanceSEM            =nanstd(sortedAnalysis.(thistype).Wheel.Distance,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+%         end
+%         
+        %% Pupillometry
+        if Analysis.Properties.Pupillometry
+            sortedAnalysis.(thistype).Pupil.Time          =Analysis.AllData.Pupil.Time(thisFilter,:);
+            sortedAnalysis.(thistype).Pupil.Blink         =Analysis.AllData.Pupil.Blink(thisFilter,:);
+            sortedAnalysis.(thistype).Pupil.Pupil         =Analysis.AllData.Pupil.Pupil(thisFilter,:);
+            sortedAnalysis.(thistype).Pupil.Baseline      =Analysis.AllData.Pupil.Baseline(thisFilter);
+            sortedAnalysis.(thistype).Pupil.NormBaseline  =Analysis.AllData.Pupil.NormBaseline(thisFilter);
+            sortedAnalysis.(thistype).Pupil.PupilDPP      =Analysis.AllData.Pupil.PupilDPP(thisFilter,:);
+            sortedAnalysis.(thistype).Pupil.Cue           =Analysis.AllData.Pupil.Cue(thisFilter);
+            sortedAnalysis.(thistype).Pupil.Outcome       =Analysis.AllData.Pupil.Outcome(thisFilter);
+            % Average
+            sortedAnalysis.(thistype).Pupil.PupilAVG   	=nanmean(sortedAnalysis.(thistype).Pupil.PupilDPP,1); 
+            sortedAnalysis.(thistype).Pupil.PupilSEM      =nanstd(sortedAnalysis.(thistype).Pupil.PupilDPP,0,1)/sqrt(sortedAnalysis.(thistype).nTrials);
+        end
+        end
     end
-end
+end 
+        
+    end
 end

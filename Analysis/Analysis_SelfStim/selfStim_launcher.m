@@ -1,9 +1,9 @@
 % Code analysis Self stimulation
 close all
-generalDir = 'F:\Photometry_SJLab\Data\';
-subject ='Dummy Subject' ;
-session = 10;
-date = 'Jun19_2018';
+generalDir = 'F:\Data\';
+subject ='mar025' ;
+session = 1;
+date = 'Jul10_2018';
 protocol = 'Self-Stimulation';
 n=1;
 clear Analysis
@@ -32,6 +32,7 @@ nTrials = SessionData.nTrials;
 logicals = zeros(nTrials,2);trialTypes = cell(nTrials,1);
 trialStarts = SessionData.TrialStartTimestamp;
 
+
 for n=nTrials:-1:1
     states(n) = SessionData.RawEvents.Trial{1,n}.States;
     if ~isnan(SessionData.RawEvents.Trial{1,n}.States.Laser(1))
@@ -43,7 +44,9 @@ for n=nTrials:-1:1
     responseTime(n) = SessionData.RawEvents.Trial{1,n}.States.WaitForResponse(end);
     responseTimeStamp(n)= trialStarts(n)+responseTime(n) ;
 end
-startPoke = trialStarts(trialPoke);
+%startPoke = trialStarts(trialPoke);
+startPoke = responseTimeStamp(trialPoke);
+
 Analysis.startPoke = startPoke;
 Analysis.Logicals = logicals;
 Analysis.TrialTypes = trialTypes;
@@ -52,8 +55,10 @@ Analysis.ResponseTimeStamp = responseTimeStamp(:);
 Analysis.ResponseTimePerTrial = responseTime(:);% plot
 Analysis.ResponseTimeFromStart = responseTimeStamp -trialStarts(1);% plot
 Analysis.ResponseTimeFromPoke1 = responseTimeStamp -startPoke;% plot
-startId = find(Analysis.ResponseTimeFromPoke1/20>=0);startId=startId(1);
-endId = find(Analysis.ResponseTimeFromPoke1/20<=timeFromPoke);endId=endId(end);
+%startId = find(Analysis.ResponseTimeFromPoke1/20>=0);startId=startId(1);
+startId = find(Analysis.ResponseTimeFromPoke1/60>=0,1);startId=startId(1);
+
+endId = find(Analysis.ResponseTimeFromPoke1/60<=timeFromPoke);endId=endId(end);
 
 Analysis.PercentagesFromStart = sum(logicals)./(length(logicals))*100;
 Analysis.PercentagesFromPoke1 = sum(logicals(startId:endId,:))./(length(logicals(startId:endId,:)))*100;
