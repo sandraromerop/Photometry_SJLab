@@ -1,7 +1,7 @@
 function LEDTuning
 
 global BpodSystem nidaq S
-
+%%%%%%%%%%%%%%%%%%%%%%  -----
 %% Define parameters
 
 S = BpodSystem.ProtocolSettings; % Load settings chosen in launch manager into current workspace as a struct called S

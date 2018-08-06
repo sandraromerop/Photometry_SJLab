@@ -4,7 +4,7 @@ function CuedReward
 %"WeightedRandomTrials" : generate random trials sequence
 
 %"Online_LickPlot"      : initialize and update online lick and outcome plot
-%"Online_LickEvents"    : extract the data for the online lick plot
+%"Online_LickEvents"    :b extract the data for the online lick plot
 %"Online_NidaqPlot"     : initialize and update online nidaq plot
 %"Online_NidaqEvents"   : extract the data for the online nidaq plot
 
@@ -142,7 +142,7 @@ try
     ProgramPulsePalParam(1, 'PulseTrainDelay', S.GUI.PulseTrainDelay);
     ProgramPulsePalParam(1, 'InterPhaseInterval', S.GUI.InterPhaseInterval);
     ProgramPulsePalParam(1, 'PulseTrainDuration', S.GUI.PulseTrainDuration);
-    ProgramPulsePalParam(1, 12, S.GUI.LinkedToTriggerCH1);
+    ProgramPulsePalParam(1,12, S.GUI.LinkedToTriggerCH1);
     ProgramPulsePalParam(1, 13, S.GUI.LinkedToTriggerCH2);
 end
 %% Assemble State matrix
@@ -158,12 +158,12 @@ end
         'OutputActions',{'BNCState',S.OptoStimCue});
     %Stimulus delivery
     sma=AddState(sma,'Name', 'SoundDelivery',...
-        'Timer',S.GUI.SoundDuration,...
+        'Timer',0,...
         'StateChangeConditions',{'Tup', 'Delay'},...
         'OutputActions', {'SoftCode',S.Sound}); 
     %Delay
     sma=AddState(sma,'Name', 'Delay',...
-        'Timer',S.Delay,...
+        'Timer',S.GUI.SoundDuration+S.Delay,...
         'StateChangeConditions', {'Tup', 'Outcome'},...
         'OutputActions', {});
     %Reward
@@ -221,18 +221,22 @@ if ~isempty(fieldnames(RawEvents))                                          % If
     BpodSystem.Data = AddTrialEvents(BpodSystem.Data,RawEvents);            % Computes trial events from raw data
     BpodSystem.Data.TrialSettings(currentTrial) = S;                        % Adds the settings used for the current trial to the Data struct (to be saved after the trial ends)
     BpodSystem.Data.TrialTypes(currentTrial) = TrialSequence(currentTrial); % Adds the trial type of the current trial to data
-    SaveBpodSessionData;                                                    % Saves the field BpodSystem.Data to the current data file
+    SaveBpodSessionData;  % Saves the field BpodSystem.Data to the current data file
+    saveTrialSettings(S.GUIMeta.Phase.String);
 end
 
 %% PLOT - extract events from BpodSystem.data and update figures
 trialNamesPlot= S.TrialsNames;trialNamesPlot = trialNamesPlot(unique(TrialSequence));
 trialTypePlot = find(strcmp(trialNamesPlot,S.TrialsNames(TrialSequence(currentTrial))));
 
-[currentOutcome, currentLickEvents,outcomeId]=Online_LickEvents(S.TrialsMatrix,currentTrial,TrialSequence(currentTrial),...
-    S.Names.StateToZero{S.GUI.StateToZero});
-S.TrialOutcomes{find(unique(TrialSequence)==TrialSequence(currentTrial))}  = [S.TrialOutcomes{find(unique(TrialSequence)==TrialSequence(currentTrial))}   outcomeId];
+[currentOutcome, currentLickEvents,outcomeId]=Online_LickEvents(S.TrialsMatrix,currentTrial,TrialSequence(currentTrial),S.Names.StateToZero{S.GUI.StateToZero});
+
+% keep track of outcomes for each trial type
+% this allows for separate averages in the plot
+thisTrialType = find(unique(TrialSequence)==TrialSequence(currentTrial));
+S.TrialOutcomes{thisTrialType} = [S.TrialOutcomes{thisTrialType} outcomeId];
+
 FigLick=Online_LickPlot('update',trialNamesPlot,[],trialNamesPlot,[],FigLick,currentTrial,currentOutcome,trialTypePlot,currentLickEvents);
-tic
 if S.GUI.Photometry
      [currentNidaq470, nidaqRaw]=Online_NidaqDemod(PhotoData(:,1),nidaq.LED1,...
         S.GUI.LED1_Freq,S.GUI.LED1_Amp,S.Names.StateToZero{S.GUI.StateToZero},currentTrial);
@@ -242,15 +246,13 @@ if S.GUI.Photometry
     else
         currentNidaq405=[0 0];
     end
-    FigNidaq=Online_NidaqPlot('update',trialNamesPlot,[],FigNidaq,currentNidaq470,...
-        currentNidaq405,nidaqRaw,trialTypePlot);
+    FigNidaq=Online_NidaqPlot('update',trialNamesPlot,[],FigNidaq,currentNidaq470,currentNidaq405,nidaqRaw,trialTypePlot);
     %% 
     if S.GUI.DbleFibers == 1
         [currentNidaq470b,nidaqRawb]=Online_NidaqDemod(Photo2Data(:,1),nidaq.LED2,S.GUI.LED1b_Freq,S.GUI.LED1b_Amp,S.Names.StateToZero{S.GUI.StateToZero},currentTrial);
         FigNidaqB=Online_NidaqPlot('update',[],[],FigNidaqB,currentNidaq470b,currentNidaq405,nidaqRawb,TrialSequence(currentTrial));
     end
 end
-toc
 
 if S.GUI.Wheel
     FigWheel=Online_WheelPlot('update',FigWheel,WheelData,S.Names.StateToZero{S.GUI.StateToZero},currentTrial,currentLickEvents);

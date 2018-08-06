@@ -1,4 +1,4 @@
-function trialSeq=WeightedRandomTrials(probTrials,maxTrials, varargin)
+function trialSeq=WeightedRandomTrials(probTrials,maxTrials)
 %trialSeq=WeightedRandomTrials(probTrials,maxTrials).
 %
 %Generates a randomized and weighted distribution "TrialSeq"
@@ -18,19 +18,7 @@ if abs(sum(probTrials))-1 > 1e-9
     return
 end
 
-if nargin ==2 
-    rng('shuffle')
-    tempSeq=rand(1,maxTrials);
-    trialSeq=arrayfun(@(z)sum(z>=cumsum([0,probTrials])),tempSeq);
-else
-    switch varargin{1}
-        case 'randomize'
-            rng('shuffle')
-            tempSeq=rand(1,maxTrials);
-            trialSeq=arrayfun(@(z)sum(z>=cumsum([0,probTrials])),tempSeq);            
-        case 'block'
-            orderTrials = varargin{2};
-            [trialSeq] = blockIndices(maxTrials, probTrials, orderTrials);
-    end
-end
+rng('shuffle')
+tempSeq=rand(1,maxTrials);
+trialSeq=arrayfun(@(z)sum(z>=cumsum([0,probTrials])),tempSeq);
 end

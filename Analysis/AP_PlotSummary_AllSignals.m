@@ -1,7 +1,11 @@
 function AP_PlotSummary_AllSignals(Analysis,DefaultParam )
+<<<<<<< HEAD
 
 
 for stateNb=1:length(Analysis.Properties.StateToZero)
+=======
+for stateNb=1:size(Analysis.AllData.Photo_470.DFF,1)
+>>>>>>> 804147605b139b4b400485584bbf6ba7f66f6dc2
 figure('units','normalized','position',[.1 .1 .7 .7])
 
 idFilt=[];nbOfTrialTypes= Analysis.Properties.nbOfTrialTypes;
@@ -17,13 +21,17 @@ trialTypes(trialTypes>nbOfTrialTypes)=[];
 minY = {[] [] []};p90 = {[] [] []};p10 = {[] [] []};maxY ={[] [] []};
 for tT = trialTypes
     [thisFilter] = getFilter(Analysis,tT);    
+<<<<<<< HEAD
     
     
+=======
+>>>>>>> 804147605b139b4b400485584bbf6ba7f66f6dc2
     tempPhoto_470 = squeeze( Analysis.AllData.Photo_470.DFF(stateNb,thisFilter,1:end));
     maxY{1}= [maxY{1} max(nanmean(tempPhoto_470(:,1:end),1)+ nanstd((tempPhoto_470(:,1:end)),[],1)./(sqrt(size(tempPhoto_470,1))))];
     minY{1}= [minY{1} min(nanmean(tempPhoto_470(:,1:end),1)+ nanstd((tempPhoto_470(:,1:end)),[],1)./(sqrt(size(tempPhoto_470,1))))];
     p90{1} = [p90{1} prctile(tempPhoto_470,90)];
     p10{1} = [p10{1} prctile(tempPhoto_470,10)];
+<<<<<<< HEAD
     
     tempWheel =  diff( squeeze(Analysis.AllData.Wheel.Distance(stateNb,thisFilter,:)),[],2);
     maxY{2}= [maxY{2} max(nanmean(tempWheel(:,1:end),1)+ nanstd((tempWheel(:,1:end)),[],1)./(sqrt(size(tempWheel,1))))];
@@ -32,6 +40,15 @@ for tT = trialTypes
     p10{2} = [p10{2} prctile(tempWheel,10)];
     
     
+=======
+    
+    tempWheel =  diff( squeeze(Analysis.AllData.Wheel.Distance(stateNb,thisFilter,:)),[],2);
+    maxY{2}= [maxY{2} max(nanmean(tempWheel(:,1:end),1)+ nanstd((tempWheel(:,1:end)),[],1)./(sqrt(size(tempWheel,1))))];
+    minY{2}= [minY{2} min(nanmean(tempWheel(:,1:end),1)+ nanstd((tempWheel(:,1:end)),[],1)./(sqrt(size(tempWheel,1))))];
+    p90{2} = [p90{2} prctile(tempWheel,90)];
+    p10{2} = [p10{2} prctile(tempWheel,10)];
+    
+>>>>>>> 804147605b139b4b400485584bbf6ba7f66f6dc2
     tempLick = squeeze( Analysis.AllData.Licks.Rate(stateNb,thisFilter,:));
     maxY{3}= [maxY{3} max(nanmean(tempLick(:,1:end),1)+ nanstd((tempLick(:,1:end)),[],1)./(sqrt(size(tempLick,1))))];
     minY{3}= [minY{3} min(nanmean(tempLick(:,1:end),1)+ nanstd((tempLick(:,1:end)),[],1)./(sqrt(size(tempLick,1))))];
@@ -223,4 +240,3 @@ saveas(gcf,[Analysis.Properties.DirFig '\' Analysis.Properties.Name '_' Analysis
 saveas(gcf,[Analysis.Properties.DirFig '\' Analysis.Properties.Name '_' Analysis.Properties.StateToZero{stateNb} '_' 'summary_all' '.m']);
 end
 end
- 

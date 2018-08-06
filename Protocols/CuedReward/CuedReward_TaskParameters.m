@@ -1,35 +1,20 @@
 function CuedReward_TaskParameters(Param)
-%
-%
-%
 
 global S %BpodSystem
     listPhases= {'RewardA','RewardB','RewardAPunishB','RewardBPunishA',...
                     'RewardAPunishBValues','RewardBPunishAValues','RewardACBValues'} ;
     idx = listdlg('ListString',listPhases,...
         'PromptString','Select the Phase of the experiment');
-    phase{1}  =listPhases{idx};
-    phaseName =  phase{1}; 
-    S.Names.Phase =listPhases;
-    S.Names.Sound={'Sweep','Tones'};
-    S.Names.StateToZero={'PostReward','SoundDelivery'};
-    S.Names.OutcomePlot={'Collect','GoNoGo'};
+    phase{1} = listPhases{idx};
+    phaseName = phase{1}; 
+    S.Names.Phase = listPhases;
+    S.Names.Sound = {'Sweep','Tones'};
+    S.Names.StateToZero = {'PostReward','SoundDelivery'};
+    S.Names.OutcomePlot = {'Collect','GoNoGo'};
     
-    answer = questdlg('Load latest trial settings?', ...
-            'loadTrialSettings','yes','no','no');
-    loadFile = 0;
-
-    if ~isempty(strfind(answer,'yes'))   
-        if exist([ S.BpodPath '\TrialSettings_' phaseName '.mat' ],'file')==2
-            load([ S.BpodPath '\TrialSettings_' phaseName '.mat' ])
-        else
-            load([ S.BpodPath '\TrialSettings_' phaseName  '_Default'  '.mat' ])
-            disp('Non existent file of last session for this phase')
-        end
-        else
-            load([ S.BpodPath '\TrialSettings_' phaseName  '_Default'  '.mat' ])
-    end
-
+    % load settings from previous session
+    % if that fails, load default settings
+    TrialSettings = loadPreviousSettings(phaseName);
         
     switch phaseName
         case 'RewardAPunishB' 
@@ -254,13 +239,13 @@ global S %BpodSystem
 	S.GUI.NidaqDuration=TrialSettings.NidaqDuration;
     S.GUI.NidaqSamplingRate=TrialSettings.NidaqSamplingRate;
     S.GUI.LED1_Wavelength=TrialSettings.LED1_Wavelength;
-    S.GUI.LED1_Amp=Param.LED1Amp;
+    S.GUI.LED1_Amp=TrialSettings.LED1_Amp;
     S.GUI.LED1_Freq=TrialSettings.LED1_Freq;
     S.GUI.LED2_Wavelength=TrialSettings.LED2_Wavelength;
-    S.GUI.LED2_Amp=Param.LED2Amp;
+    S.GUI.LED2_Amp=TrialSettings.LED2_Amp;
     S.GUI.LED2_Freq=TrialSettings.LED2_Freq;
     S.GUI.LED1b_Wavelength=TrialSettings.LED1b_Wavelength;
-    S.GUI.LED1b_Amp=Param.LED1bAmp;
+    S.GUI.LED1b_Amp=TrialSettings.LED1b_Amp;
     S.GUI.LED1b_Freq=TrialSettings.LED1b_Freq;
 
     S.GUIPanels.Photometry={'NidaqDuration','NidaqSamplingRate',...
@@ -290,7 +275,7 @@ global S %BpodSystem
     S.GUITabs.Optogenetics={'Optogenetics'};
 
     %%%% Add more options 
-%% Online Plots   
+    %% Online Plots   
     S.GUI.StateToZero=1;
 	S.GUIMeta.StateToZero.Style = 'popupmenu';
     S.GUIMeta.StateToZero.String=S.Names.StateToZero;

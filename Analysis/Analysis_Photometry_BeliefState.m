@@ -20,9 +20,13 @@ try
     sortedAnalysis = Analysis;
     Analysis=A_FilterTrialType(Analysis);
     [Analysis sortedAnalysis ]=AP_DataSort(Analysis,sortedAnalysis);
+<<<<<<< HEAD
     if Analysis.Properties.Photometry
         Analysis = allignTraces(Analysis);
     end
+=======
+    Analysis = allignTraces(Analysis);
+>>>>>>> 804147605b139b4b400485584bbf6ba7f66f6dc2
     
     Analysis.Properties.DirFig = [DefaultParam.PathName '\' Analysis.Properties.Phase '\' 'Figures'];
     mkdir(Analysis.Properties.DirFig )
