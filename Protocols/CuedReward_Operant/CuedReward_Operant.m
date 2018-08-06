@@ -34,9 +34,9 @@ BpodSystem.Pause=1;
 HandlePauseCondition;
 S = BpodParameterGUI('sync', S);
 
-S.SmallRew  =   GetValveTimes(S.GUI.SmallReward, S.GUI.RewardValve);
-S.InterRew  =   GetValveTimes(S.GUI.InterReward, S.GUI.RewardValve);
-S.LargeRew  =   GetValveTimes(S.GUI.LargeReward, S.GUI.RewardValve);
+S.RewA  =   GetValveTimes(S.GUI.RewardA, S.GUI.RewardValve);
+S.RewB  =   GetValveTimes(S.GUI.RewardB, S.GUI.RewardValve);
+S.RewC  =   GetValveTimes(S.GUI.RewardC, S.GUI.RewardValve);
 
 %% Define stimuli and send to sound server
 TimeSound=0:1/S.GUI.SoundSamplingRate:S.GUI.SoundDuration;
@@ -49,17 +49,19 @@ switch S.GUI.SoundType
         CueC=[chirp(HalfTimeSound,S.GUI.LowFreq,S.GUI.SoundDuration/2,S.GUI.HighFreq) chirp(HalfTimeSound,S.GUI.HighFreq,S.GUI.SoundDuration/2,S.GUI.LowFreq)];
 
     case 2
-        CueA=SoundGenerator(S.GUI.SoundSamplingRate,S.GUI.LowFreq,S.GUI.FreqWidth,S.GUI.NbOfFreq,S.GUI.SoundDuration,S.GUI.SoundRamp);
-        CueB=SoundGenerator(S.GUI.SoundSamplingRate,S.GUI.HighFreq,S.GUI.FreqWidth,S.GUI.NbOfFreq,S.GUI.SoundDuration,S.GUI.SoundRamp);
+        CueA=SoundGenerator(S.GUI.SoundSamplingRate,S.GUI.FreqA,S.GUI.FreqWidth,S.GUI.NbOfFreq,S.GUI.SoundDuration,S.GUI.SoundRamp);
+        CueB=SoundGenerator(S.GUI.SoundSamplingRate,S.GUI.FreqB,S.GUI.FreqWidth,S.GUI.NbOfFreq,S.GUI.SoundDuration,S.GUI.SoundRamp);
+        CueC=SoundGenerator(S.GUI.SoundSamplingRate,S.GUI.FreqC,S.GUI.FreqWidth,S.GUI.NbOfFreq,S.GUI.SoundDuration,S.GUI.SoundRamp);
         NoCue=zeros(1,S.GUI.SoundDuration*S.GUI.SoundSamplingRate);
-        CueC=SoundGenerator(S.GUI.SoundSamplingRate,(S.GUI.LowFreq+S.GUI.HighFreq)/2,S.GUI.FreqWidth,S.GUI.NbOfFreq,S.GUI.SoundDuration,S.GUI.SoundRamp);
+        %CueC=SoundGenerator(S.GUI.SoundSamplingRate,(S.GUI.LowFreq+S.GUI.HighFreq)/2,S.GUI.FreqWidth,S.GUI.NbOfFreq,S.GUI.SoundDuration,S.GUI.SoundRamp);
 end
 
 PsychToolboxSoundServer('init');
 PsychToolboxSoundServer('Load', 1, CueA);
 PsychToolboxSoundServer('Load', 2, CueB);
-PsychToolboxSoundServer('Load', 3, NoCue);
-PsychToolboxSoundServer('Load', 4, CueC);
+PsychToolboxSoundServer('Load', 3, CueC);
+PsychToolboxSoundServer('Load', 4, NoCue);
+
 BpodSystem.SoftCodeHandlerFunction = 'SoftCodeHandler_PlaySound';
 
 %% Define trial types parameters, trial sequence and Initialize plots
